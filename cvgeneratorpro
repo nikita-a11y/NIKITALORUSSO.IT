@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CV Creator Pro</title>
+    <meta name="description" content="Generatore di CV professionale e gratuito">
+    
+    <!-- Carichiamo FontAwesome e Font Google -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@300;400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+
+    <!-- CSS per resettare i margini della pagina intera -->
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            height: 100%;
+        }
+        /* Centratura per la versione standalone */
+        .standalone-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body>
+
+<div class="standalone-wrapper">
+    <!-- INIZIO APP WEBADOR -->
+    <div id="webador-cv-app">
+        <!-- TOOLBAR SUPERIORE -->
+        <div class="cv-header-tool">
+            <div class="cv-brand">
+                <i class="fa-solid fa-file-signature"></i> CV Creator <span class="cv-badge">PRO</span>
+            </div>
+            <div class="cv-actions">
+                <button type="button" class="cv-btn cv-btn-secondary" onclick="window.WebadorCV.resetData()">
+                    <i class="fa-solid fa-rotate-left"></i> <span class="cv-hide-mobile">Nuovo</span>
+                </button>
+                <button type="button" class="cv-btn cv-btn-primary" onclick="window.WebadorCV.printPDF()">
+                    <i class="fa-solid fa-file-pdf"></i> Scarica PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- SPAZIO DI LAVORO -->
+        <div class="cv-workspace">
+            
+            <!-- COLONNA EDITOR (SINISTRA) -->
+            <div class="cv-editor">
+                <!-- MENU TAB -->
+                <div class="cv-tabs">
+                    <button class="cv-tab active" onclick="window.WebadorCV.switchTab('content', this)">
+                        <i class="fa-solid fa-user-pen"></i> Dati
+                    </button>
+                    <button class="cv-tab" onclick="window.WebadorCV.switchTab('design', this)">
+                        <i class="fa-solid fa-paintbrush"></i> Stile
+                    </button>
+                </div>
+
+                <!-- CONTENUTO SCROLLABILE -->
+                <div class="cv-tab-content-container">
+                    
+                    <!-- TAB 1: CONTENUTO -->
+                    <div id="cv-tab-content" class="cv-panel active">
+                        
+                        <!-- FOTO -->
+                        <div class="cv-box">
+                            <div class="cv-label">Foto Profilo</div>
+                            <div class="cv-photo-control">
+                                <div id="cv-photo-preview" class="cv-avatar-preview">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <div class="cv-photo-btns">
+                                    <input type="file" id="cv-upload-input" accept="image/*" onchange="window.WebadorCV.uploadPhoto(this)" style="display:none">
+                                    <button class="cv-btn-small" onclick="document.getElementById('cv-upload-input').click()">Carica Foto</button>
+                                    <button class="cv-btn-small cv-text-red" onclick="window.WebadorCV.removePhoto()">Rimuovi</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ANAGRAFICA -->
+                        <div class="cv-section-sep">Informazioni Base</div>
+                        <input type="text" class="cv-input" data-bind="personal.name" placeholder="Nome e Cognome">
+                        <input type="text" class="cv-input" data-bind="personal.title" placeholder="Titolo Professionale (es. Architetto)">
+                        
+                        <div class="cv-row">
+                            <input type="text" class="cv-input" data-bind="personal.email" placeholder="Email">
+                            <input type="text" class="cv-input" data-bind="personal.phone" placeholder="Telefono">
+                        </div>
+                        <div class="cv-row">
+                            <input type="text" class="cv-input" data-bind="personal.location" placeholder="Città">
+                            <input type="text" class="cv-input" data-bind="personal.website" placeholder="Sito Web / LinkedIn">
+                        </div>
+                        
+                        <textarea class="cv-input" data-bind="personal.summary" rows="4" placeholder="Profilo professionale: descrivi brevemente chi sei e i tuoi obiettivi..."></textarea>
+
+                        <!-- ESPERIENZA -->
+                        <div class="cv-section-sep">
+                            <span>Esperienza</span> 
+                            <button class="cv-btn-add" onclick="window.WebadorCV.addItem('experience')">+ Aggiungi</button>
+                        </div>
+                        <div id="cv-list-experience" class="cv-dynamic-list"></div>
+
+                        <!-- ISTRUZIONE -->
+                        <div class="cv-section-sep">
+                            <span>Istruzione</span> 
+                            <button class="cv-btn-add" onclick="window.WebadorCV.addItem('education')">+ Aggiungi</button>
+                        </div>
+                        <div id="cv-list-education" class="cv-dynamic-list"></div>
+
+                        <!-- SKILLS -->
+                        <div class="cv-section-sep">Competenze</div>
+                        <p class="cv-help-text">Separale con una virgola (es: Excel, Photoshop, Inglese)</p>
+                        <textarea class="cv-input" data-bind="skills" rows="3" placeholder="Elenco competenze..."></textarea>
+                    </div>
+
+                    <!-- TAB 2: DESIGN -->
+                    <div id="cv-tab-design" class="cv-panel">
+                        
+                        <div class="cv-box">
+                            <div class="cv-label">Scegli Layout</div>
+                            <div class="cv-template-grid">
+                                <div class="cv-tpl-card active" onclick="window.WebadorCV.setConfig('template', 'modern', this)">
+                                    <div class="cv-tpl-icon" style="background: linear-gradient(90deg, #ccc 30%, #fff 30%);"></div>
+                                    <span>Moderno</span>
+                                </div>
+                                <div class="cv-tpl-card" onclick="window.WebadorCV.setConfig('template', 'classic', this)">
+                                    <div class="cv-tpl-icon" style="background: #fff; border-top: 5px solid #ccc;"></div>
+                                    <span>Classico</span>
+                                </div>
+                                <div class="cv-tpl-card" onclick="window.WebadorCV.setConfig('template', 'minimal', this)">
+                                    <div class="cv-tpl-icon" style="background: #fff;"></div>
+                                    <span>Minimal</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cv-box">
+                            <div class="cv-label">Colore Accento</div>
+                            <div class="cv-color-picker">
+                                <button style="background:#3b82f6" onclick="window.WebadorCV.setConfig('color', '#3b82f6')"></button>
+                                <button style="background:#10b981" onclick="window.WebadorCV.setConfig('color', '#10b981')"></button>
+                                <button style="background:#ef4444" onclick="window.WebadorCV.setConfig('color', '#ef4444')"></button>
+                                <button style="background:#1f2937" onclick="window.WebadorCV.setConfig('color', '#1f2937')"></button>
+                                <button style="background:#8b5cf6" onclick="window.WebadorCV.setConfig('color', '#8b5cf6')"></button>
+                                <button style="background:#d97706" onclick="window.WebadorCV.setConfig('color', '#d97706')"></button>
+                                <div style="position:relative; width:30px; height:30px; overflow:hidden; border-radius:50%; border:1px solid #ccc;">
+                                    <input type="color" onchange="window.WebadorCV.setConfig('color', this.value)" style="position:absolute; top:-5px; left:-5px; width:50px; height:50px; cursor:pointer;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cv-box">
+                            <div class="cv-label">Carattere</div>
+                            <select class="cv-input" onchange="window.WebadorCV.setConfig('font', this.value)">
+                                <option value="Inter, sans-serif">Moderno (Inter)</option>
+                                <option value="Merriweather, serif">Elegante (Serif)</option>
+                                <option value="Roboto Mono, monospace">Tecnico (Mono)</option>
+                            </select>
+                        </div>
+
+                        <div class="cv-box">
+                            <div class="cv-label">Dimensione Testo</div>
+                            <input type="range" class="cv-range" min="0.8" max="1.1" step="0.05" value="1" oninput="window.WebadorCV.setConfig('scale', this.value)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLONNA PREVIEW (DESTRA) -->
+            <div class="cv-preview-wrapper" id="cv-preview-wrapper">
+                <div id="cv-zoom-badge" class="cv-zoom-badge">Caricamento...</div>
+                <div id="cv-render-output" class="cv-render-output">
+                    <!-- IL CV VIENE GENERATO QUI -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- FINE APP WEBADOR -->
+
+    <style>
+    /* --- CSS ISOLATO (Scoped per Webador) --- */
+    #webador-cv-app {
+        font-family: 'Inter', sans-serif;
+        color: #374151;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin: 0 auto; /* Centrato */
+        font-size: 15px;
+        line-height: 1.5;
+        width: 100%;
+        max-width: 1200px; /* Max width per la versione standalone */
+    }
+    #webador-cv-app * { box-sizing: border-box; }
+
+    /* Header */
+    #webador-cv-app .cv-header-tool {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background: #fff;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    #webador-cv-app .cv-brand { font-weight: 800; font-size: 1.2rem; color: #111827; display: flex; align-items: center; gap: 8px; }
+    #webador-cv-app .cv-badge { background: #dbeafe; color: #2563eb; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+
+    /* Workspace */
+    #webador-cv-app .cv-workspace {
+        display: flex;
+        flex-direction: row;
+        height: 800px; /* Altezza Desktop */
+        position: relative;
+        background: #f9fafb;
+    }
+
+    /* Editor */
+    #webador-cv-app .cv-editor {
+        width: 400px;
+        background: #fff;
+        border-right: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        z-index: 10;
+    }
+
+    /* Tabs */
+    #webador-cv-app .cv-tabs { display: flex; border-bottom: 1px solid #e5e7eb; }
+    #webador-cv-app .cv-tab {
+        flex: 1;
+        padding: 15px;
+        background: #fff;
+        border: none;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        font-weight: 600;
+        color: #6b7280;
+        font-size: 14px;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    #webador-cv-app .cv-tab:hover { background: #f9fafb; }
+    #webador-cv-app .cv-tab.active { color: #2563eb; border-bottom-color: #2563eb; background: #eff6ff; }
+
+    /* Content Area */
+    #webador-cv-app .cv-tab-content-container { flex: 1; overflow-y: auto; padding: 20px; background: #fff; }
+    #webador-cv-app .cv-panel { display: none; animation: cvFadeIn 0.3s ease; }
+    #webador-cv-app .cv-panel.active { display: block; }
+    @keyframes cvFadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Inputs & Forms */
+    #webador-cv-app .cv-box { margin-bottom: 20px; }
+    #webador-cv-app .cv-label { font-size: 0.85rem; font-weight: 600; color: #374151; margin-bottom: 8px; display: block; }
+    #webador-cv-app .cv-help-text { font-size: 0.75rem; color: #9ca3af; margin-bottom: 8px; font-style: italic; }
+    #webador-cv-app .cv-section-sep {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #9ca3af;
+        margin: 25px 0 10px 0;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #f3f4f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #webador-cv-app .cv-input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        background: #fff;
+        transition: border-color 0.2s;
+        font-family: inherit;
+    }
+    #webador-cv-app .cv-input:focus { border-color: #2563eb; outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+    #webador-cv-app .cv-row { display: flex; gap: 10px; }
+    #webador-cv-app .cv-row .cv-input { flex: 1; }
+
+    /* Photo Upload */
+    #webador-cv-app .cv-photo-control { display: flex; align-items: center; gap: 15px; }
+    #webador-cv-app .cv-avatar-preview { 
+        width: 60px; height: 60px; border-radius: 50%; background: #f3f4f6; 
+        border: 2px solid #e5e7eb; flex-shrink: 0; 
+        background-size: cover; background-position: center;
+        display: flex; align-items: center; justify-content: center; color: #d1d5db; font-size: 24px;
+    }
+
+    /* Dynamic Lists */
+    #webador-cv-app .cv-item { background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; margin-bottom: 12px; position: relative; }
+    #webador-cv-app .cv-btn-del { 
+        position: absolute; top: 10px; right: 10px; color: #d1d5db; 
+        cursor: pointer; background:none; border:none; font-size: 16px; 
+        transition: color 0.2s;
+    }
+    #webador-cv-app .cv-btn-del:hover { color: #ef4444; }
+
+    /* Buttons */
+    #webador-cv-app .cv-btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    #webador-cv-app .cv-btn-primary { background: #2563eb; color: #fff; }
+    #webador-cv-app .cv-btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+    #webador-cv-app .cv-btn-secondary { background: #fff; border: 1px solid #d1d5db; color: #374151; }
+    #webador-cv-app .cv-btn-secondary:hover { background: #f9fafb; border-color: #9ca3af; }
+
+    #webador-cv-app .cv-btn-add { background: none; border: none; color: #2563eb; cursor: pointer; font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 4px; }
+    #webador-cv-app .cv-btn-add:hover { background: #eff6ff; }
+    #webador-cv-app .cv-btn-small { padding: 6px 10px; font-size: 11px; cursor: pointer; background: #fff; border: 1px solid #d1d5db; border-radius: 4px; font-weight: 600; }
+    #webador-cv-app .cv-btn-small:hover { background: #f9fafb; }
+    #webador-cv-app .cv-text-red { color: #ef4444; border-color: #fee2e2; }
+    #webador-cv-app .cv-text-red:hover { background: #fef2f2; }
+
+    /* Design Grid */
+    #webador-cv-app .cv-template-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    #webador-cv-app .cv-tpl-card { 
+        border: 2px solid #e5e7eb; padding: 10px; text-align: center; border-radius: 8px; 
+        cursor: pointer; font-size: 12px; font-weight: 600; color: #6b7280; transition: all 0.2s; 
+    }
+    #webador-cv-app .cv-tpl-card:hover { border-color: #93c5fd; }
+    #webador-cv-app .cv-tpl-card.active { border-color: #2563eb; color: #2563eb; background: #eff6ff; }
+    #webador-cv-app .cv-tpl-icon { width: 100%; height: 40px; background: #e5e7eb; border-radius: 4px; margin-bottom: 8px; border: 1px solid #d1d5db; }
+    #webador-cv-app .cv-color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+    #webador-cv-app .cv-color-picker button { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px #d1d5db; cursor: pointer; transition: transform 0.2s; }
+    #webador-cv-app .cv-color-picker button:hover { transform: scale(1.1); }
+    #webador-cv-app .cv-range { width: 100%; }
+
+    /* PREVIEW AREA */
+    #webador-cv-app .cv-preview-wrapper {
+        flex: 1;
+        background: #64748b; /* Slate-500 */
+        padding: 30px;
+        overflow: hidden; 
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        position: relative;
+        /* Pattern di sfondo per effetto professionale */
+        background-image: radial-gradient(#94a3b8 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    #webador-cv-app .cv-zoom-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        pointer-events: none;
+        z-index: 20;
+        font-weight: 600;
+    }
+
+    #webador-cv-app .cv-render-output {
+        min-height: 200px; /* Placeholder finché non carica */
+        transition: opacity 0.3s ease;
+    }
+
+    /* --- RESPONSIVE MOBILE --- */
+    @media (max-width: 900px) {
+        #webador-cv-app .cv-workspace { 
+            flex-direction: column-reverse; 
+            height: auto;
+        }
+        #webador-cv-app .cv-editor { 
+            width: 100%; 
+            border-right: none; 
+            border-top: 1px solid #e5e7eb;
+        }
+        #webador-cv-app .cv-tab-content-container {
+            max-height: 500px; /* Scroll interno su mobile */
+        }
+        #webador-cv-app .cv-preview-wrapper { 
+            min-height: 500px;
+            padding: 15px;
+        }
+        #webador-cv-app .cv-hide-mobile { display: none; }
+    }
+
+    /* --- CV A4 BASE STYLES --- */
+    .cv-a4-page {
+        width: 210mm; /* 793.7px */
+        min-height: 297mm; /* 1122.5px */
+        background: white;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        transform-origin: top center;
+        overflow: hidden;
+        color: #111;
+    }
+    </style>
+
+    <script>
+    (function() {
+        // PROTEZIONE DOPPIO CARICAMENTO
+        if (window.WebadorCV) return; 
+
+        // DATI DEFAULT
+        const DEFAULT_DATA = {
+            personal: { 
+                name: 'Mario Rossi', 
+                title: 'Digital Specialist', 
+                email: 'mario.rossi@email.it', 
+                phone: '333 1234567', 
+                location: 'Milano', 
+                website: '',
+                summary: 'Professionista motivato con 5 anni di esperienza nella gestione di progetti complessi. Appassionato di innovazione e lavoro di squadra.' 
+            },
+            experience: [{ id: 1, role: 'Senior Manager', company: 'Azienda Tech', start: '2020', end: 'Oggi', desc: 'Coordinamento team e gestione budget.' }],
+            education: [{ id: 1, degree: 'Laurea in Economia', school: 'Università Statale', year: '2019' }],
+            skills: 'Project Management, Inglese, Leadership, Office 365',
+            photo: null,
+            config: { template: 'modern', color: '#3b82f6', font: 'Inter, sans-serif', scale: 1 }
+        };
+
+        window.WebadorCV = {
+            data: null, // Sarà inizializzato nell'init
+            resizeObserver: null,
+
+            init: function() {
+                // 1. CARICAMENTO DATI
+                const saved = localStorage.getItem('webador_cv_data_v6');
+                if (saved) {
+                    try { this.data = JSON.parse(saved); } catch(e){ this.data = JSON.parse(JSON.stringify(DEFAULT_DATA)); }
+                } else {
+                    this.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                }
+
+                // 2. BINDING INPUTS (Collega i campi HTML ai Dati JS)
+                this.bindInputs();
+
+                // 3. RENDERIZZAZIONE INIZIALE
+                this.renderLists();
+                this.updatePhotoUI();
+                this.render();
+
+                // 4. SISTEMA DI AUTO-SCALING AVANZATO (ResizeObserver)
+                const wrapper = document.getElementById('cv-preview-wrapper');
+                if (wrapper) {
+                    this.resizeObserver = new ResizeObserver(() => {
+                        this.autoScale();
+                    });
+                    this.resizeObserver.observe(wrapper);
+                }
+                // Fallback iniziale
+                setTimeout(() => this.autoScale(), 200);
+            },
+
+            bindInputs: function() {
+                // Cerca tutti gli input con data-bind
+                document.querySelectorAll('#webador-cv-app [data-bind]').forEach(input => {
+                    const key = input.getAttribute('data-bind');
+                    
+                    // Imposta valore iniziale
+                    if (key.includes('.')) {
+                        const [p, k] = key.split('.');
+                        input.value = this.data[p][k] || '';
+                    } else {
+                        input.value = this.data[key] || '';
+                    }
+
+                    // Aggiungi listener per modifiche (rimuovendo vecchi listener per evitare duplicati in caso di reset)
+                    input.oninput = (e) => {
+                        if (key.includes('.')) {
+                            const [p, k] = key.split('.');
+                            this.data[p][k] = e.target.value;
+                        } else {
+                            this.data[key] = e.target.value;
+                        }
+                        this.save();
+                        this.render(); // Re-renderizza anteprima
+                    };
+                });
+            },
+
+            // --- GESTIONE STATO ---
+            save: function() {
+                localStorage.setItem('webador_cv_data_v6', JSON.stringify(this.data));
+            },
+
+            resetData: function() {
+                if(confirm("Sei sicuro di voler cancellare tutti i dati e ricominciare?")) {
+                    // 1. Pulisci Storage
+                    localStorage.removeItem('webador_cv_data_v6');
+                    // 2. Resetta Dati in memoria
+                    this.data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                    // 3. Aggiorna UI senza ricaricare la pagina
+                    this.bindInputs(); // Ricarica valori negli input
+                    this.renderLists();
+                    this.updatePhotoUI();
+                    this.render();
+                }
+            },
+
+            // --- GESTIONE UI TABS ---
+            switchTab: function(tabName, btn) {
+                document.querySelectorAll('#webador-cv-app .cv-panel').forEach(el => el.classList.remove('active'));
+                document.getElementById('cv-tab-' + tabName).classList.add('active');
+                
+                document.querySelectorAll('#webador-cv-app .cv-tab').forEach(el => el.classList.remove('active'));
+                btn.classList.add('active');
+            },
+
+            setConfig: function(key, val, btn) {
+                this.data.config[key] = val;
+                if (key === 'template' && btn) {
+                    document.querySelectorAll('.cv-tpl-card').forEach(el => el.classList.remove('active'));
+                    btn.classList.add('active');
+                }
+                this.save();
+                this.render();
+            },
+
+            // --- GESTIONE FOTO ---
+            uploadPhoto: function(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.data.photo = e.target.result;
+                        this.save();
+                        this.updatePhotoUI();
+                        this.render();
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
+            },
+            removePhoto: function() {
+                this.data.photo = null;
+                this.save();
+                this.updatePhotoUI();
+                this.render();
+            },
+            updatePhotoUI: function() {
+                const div = document.getElementById('cv-photo-preview');
+                if (this.data.photo) {
+                    div.innerHTML = '';
+                    div.style.backgroundImage = `url(${this.data.photo})`;
+                } else {
+                    div.innerHTML = '<i class="fa-solid fa-user"></i>';
+                    div.style.backgroundImage = 'none';
+                }
+            },
+
+            // --- GESTIONE LISTE ---
+            addItem: function(type) {
+                const item = type === 'experience' 
+                    ? { id: Date.now(), role: 'Nuovo Ruolo', company: 'Azienda', start: '', end: '', desc: '' }
+                    : { id: Date.now(), degree: 'Titolo Studio', school: 'Istituto', year: '' };
+                this.data[type].unshift(item);
+                this.save();
+                this.renderLists();
+                this.render();
+            },
+            removeItem: function(type, id) {
+                this.data[type] = this.data[type].filter(i => i.id !== id);
+                this.save();
+                this.renderLists();
+                this.render();
+            },
+            updateListItem: function(type, id, field, val) {
+                const item = this.data[type].find(i => i.id === id);
+                if(item) item[field] = val;
+                this.save();
+                this.render();
+            },
+            renderLists: function() {
+                // Experience Template
+                document.getElementById('cv-list-experience').innerHTML = this.data.experience.map(item => `
+                    <div class="cv-item">
+                        <button class="cv-btn-del" onclick="window.WebadorCV.removeItem('experience', ${item.id})"><i class="fa-solid fa-xmark"></i></button>
+                        <input class="cv-input" value="${item.role}" oninput="window.WebadorCV.updateListItem('experience', ${item.id}, 'role', this.value)" placeholder="Ruolo" style="font-weight:bold;">
+                        <input class="cv-input" value="${item.company}" oninput="window.WebadorCV.updateListItem('experience', ${item.id}, 'company', this.value)" placeholder="Azienda">
+                        <div class="cv-row">
+                            <input class="cv-input" value="${item.start}" oninput="window.WebadorCV.updateListItem('experience', ${item.id}, 'start', this.value)" placeholder="Dal">
+                            <input class="cv-input" value="${item.end}" oninput="window.WebadorCV.updateListItem('experience', ${item.id}, 'end', this.value)" placeholder="Al">
+                        </div>
+                        <textarea class="cv-input" rows="2" oninput="window.WebadorCV.updateListItem('experience', ${item.id}, 'desc', this.value)" placeholder="Descrizione attività...">${item.desc}</textarea>
+                    </div>
+                `).join('');
+
+                // Education Template
+                document.getElementById('cv-list-education').innerHTML = this.data.education.map(item => `
+                    <div class="cv-item">
+                        <button class="cv-btn-del" onclick="window.WebadorCV.removeItem('education', ${item.id})"><i class="fa-solid fa-xmark"></i></button>
+                        <input class="cv-input" value="${item.degree}" oninput="window.WebadorCV.updateListItem('education', ${item.id}, 'degree', this.value)" placeholder="Titolo" style="font-weight:bold;">
+                        <input class="cv-input" value="${item.school}" oninput="window.WebadorCV.updateListItem('education', ${item.id}, 'school', this.value)" placeholder="Scuola">
+                        <input class="cv-input" value="${item.year}" oninput="window.WebadorCV.updateListItem('education', ${item.id}, 'year', this.value)" placeholder="Anno">
+                    </div>
+                `).join('');
+            },
+
+            // --- RENDER CV (TEMPLATES HTML) ---
+            render: function() {
+                const d = this.data;
+                const c = d.config.color;
+                const f = d.config.font;
+                const skillsArr = d.skills.split(',').filter(s => s.trim() !== '');
+                const txtScale = d.config.scale || 1;
+
+                let html = '';
+
+                // 1. TEMPLATE MODERNO
+                if (d.config.template === 'modern') {
+                    html = `
+                    <div class="cv-a4-page" style="font-family:${f}; display:flex; font-size:${14 * txtScale}px;">
+                        <div style="width:34%; background:${c}; color:white; padding:30px 20px; display:flex; flex-direction:column;">
+                            <div style="text-align:center; margin-bottom:30px;">
+                                ${d.photo ? `<div style="width:110px; height:110px; border-radius:50%; background-image:url('${d.photo}'); background-size:cover; background-position:center; margin:0 auto 15px auto; border:4px solid rgba(255,255,255,0.2);"></div>` : `<div style="width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,0.2); margin:0 auto 15px auto; display:flex; align-items:center; justify-content:center; font-size:30px;">${d.personal.name.charAt(0)}</div>`}
+                                <h1 style="font-size:1.4em; font-weight:700; line-height:1.2; word-break:break-word;">${d.personal.name}</h1>
+                                <p style="opacity:0.9; margin-top:5px; font-size:0.9em; text-transform:uppercase; letter-spacing:1px;">${d.personal.title}</p>
+                            </div>
+                            <div style="font-size:0.9em; line-height:2.2; margin-bottom:30px;">
+                                ${d.personal.email ? `<div><i class="fa-solid fa-envelope" style="width:20px; text-align:center;"></i> ${d.personal.email}</div>` : ''}
+                                ${d.personal.phone ? `<div><i class="fa-solid fa-phone" style="width:20px; text-align:center;"></i> ${d.personal.phone}</div>` : ''}
+                                ${d.personal.location ? `<div><i class="fa-solid fa-location-dot" style="width:20px; text-align:center;"></i> ${d.personal.location}</div>` : ''}
+                                ${d.personal.website ? `<div><i class="fa-solid fa-globe" style="width:20px; text-align:center;"></i> ${d.personal.website}</div>` : ''}
+                            </div>
+                            <div style="margin-top:auto;">
+                                <h3 style="border-bottom:1px solid rgba(255,255,255,0.3); padding-bottom:5px; margin-bottom:10px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Competenze</h3>
+                                <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                                    ${skillsArr.map(s => `<span style="background:rgba(255,255,255,0.15); padding:4px 8px; border-radius:4px; font-size:0.85em;">${s}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="width:66%; padding:40px 30px; background:white;">
+                            <div style="margin-bottom:35px;">
+                                <h3 style="color:${c}; border-bottom:2px solid ${c}22; padding-bottom:8px; margin-bottom:15px; text-transform:uppercase; font-size:1.1em; font-weight:700; letter-spacing:1px;">Profilo</h3>
+                                <p style="color:#4b5563; line-height:1.6; text-align:justify;">${d.personal.summary}</p>
+                            </div>
+                            <div style="margin-bottom:35px;">
+                                <h3 style="color:${c}; border-bottom:2px solid ${c}22; padding-bottom:8px; margin-bottom:15px; text-transform:uppercase; font-size:1.1em; font-weight:700; letter-spacing:1px;">Esperienza</h3>
+                                ${d.experience.map(e => `
+                                    <div style="margin-bottom:25px; position:relative; padding-left:15px; border-left:2px solid #f3f4f6;">
+                                        <div style="position:absolute; left:-6px; top:6px; width:10px; height:10px; border-radius:50%; background:${c};"></div>
+                                        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+                                            <h4 style="font-weight:700; color:#1f2937; margin:0; font-size:1.05em;">${e.role}</h4>
+                                            <span style="font-size:0.85em; background:#f3f4f6; padding:2px 8px; border-radius:12px; font-weight:600; color:#4b5563;">${e.start} - ${e.end}</span>
+                                        </div>
+                                        <div style="color:${c}; font-size:0.95em; font-weight:600; margin-bottom:6px;">${e.company}</div>
+                                        <p style="color:#4b5563; font-size:0.95em; line-height:1.5;">${e.desc}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                             <div>
+                                <h3 style="color:${c}; border-bottom:2px solid ${c}22; padding-bottom:8px; margin-bottom:15px; text-transform:uppercase; font-size:1.1em; font-weight:700; letter-spacing:1px;">Istruzione</h3>
+                                ${d.education.map(e => `
+                                    <div style="margin-bottom:15px;">
+                                        <div style="font-weight:700; font-size:1em;">${e.degree}</div>
+                                        <div style="font-size:0.9em; color:#6b7280; margin-top:2px;">${e.school}, ${e.year}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>`;
+                } 
+                // 2. TEMPLATE CLASSICO
+                else if (d.config.template === 'classic') {
+                    html = `
+                    <div class="cv-a4-page" style="font-family:${f}; padding:50px; box-sizing:border-box; font-size:${14 * txtScale}px;">
+                        <div style="text-align:center; border-bottom:2px solid #374151; padding-bottom:25px; margin-bottom:35px;">
+                            ${d.photo ? `<div style="width:100px; height:100px; border-radius:50%; background-image:url('${d.photo}'); background-size:cover; background-position:center; margin:0 auto 15px auto;"></div>` : ''}
+                            <h1 style="font-size:2.2em; text-transform:uppercase; margin:0; line-height:1.1; letter-spacing:1px;">${d.personal.name}</h1>
+                            <p style="color:${c}; font-size:1.2em; margin:10px 0; font-weight:500;">${d.personal.title}</p>
+                            <div style="font-size:0.9em; color:#6b7280; display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+                                ${d.personal.email ? `<span>${d.personal.email}</span>` : ''}
+                                ${d.personal.phone ? `<span>• ${d.personal.phone}</span>` : ''}
+                                ${d.personal.location ? `<span>• ${d.personal.location}</span>` : ''}
+                            </div>
+                        </div>
+                        <div style="margin-bottom:35px;">
+                            <h3 style="color:${c}; border-bottom:1px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px; font-size:1.1em; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Profilo</h3>
+                            <p style="font-size:1em; line-height:1.6; text-align:justify; color:#374151;">${d.personal.summary}</p>
+                        </div>
+                        <div style="margin-bottom:35px;">
+                            <h3 style="color:${c}; border-bottom:1px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px; font-size:1.1em; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Esperienza Professionale</h3>
+                             ${d.experience.map(e => `
+                                    <div style="margin-bottom:25px; display:flex;">
+                                        <div style="width:130px; font-weight:700; font-size:0.9em; color:#6b7280; flex-shrink:0; padding-top:4px;">${e.start} - ${e.end}</div>
+                                        <div>
+                                            <h4 style="margin:0; font-size:1.1em; font-weight:700; color:#111827;">${e.role}</h4>
+                                            <div style="font-style:italic; font-size:0.95em; margin-bottom:6px; color:${c}; font-weight:500;">${e.company}</div>
+                                            <p style="font-size:0.95em; margin:0; line-height:1.5; color:#374151;">${e.desc}</p>
+                                        </div>
+                                    </div>
+                            `).join('')}
+                        </div>
+                        <div style="display:flex; gap:40px;">
+                            <div style="flex:1;">
+                                <h3 style="color:${c}; border-bottom:1px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px; font-size:1.1em; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Istruzione</h3>
+                                ${d.education.map(e => `<div style="margin-bottom:15px;"><strong style="display:block; font-size:1em;">${e.degree}</strong><span style="color:#6b7280; font-size:0.9em;">${e.school}, ${e.year}</span></div>`).join('')}
+                            </div>
+                            <div style="flex:1;">
+                                 <h3 style="color:${c}; border-bottom:1px solid #e5e7eb; padding-bottom:5px; margin-bottom:15px; font-size:1.1em; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Skills</h3>
+                                 <div style="font-size:0.95em; line-height:1.6;">${d.skills}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+                // 3. TEMPLATE MINIMAL
+                else {
+                     html = `
+                    <div class="cv-a4-page" style="font-family:${f}; padding:50px; box-sizing:border-box; display:flex; gap:50px; font-size:${14 * txtScale}px;">
+                        <div style="flex:2;">
+                             <h1 style="font-size:3em; font-weight:300; margin:0; line-height:1; letter-spacing:-1px;">${d.personal.name}</h1>
+                             <p style="color:${c}; font-size:1.1em; letter-spacing:3px; text-transform:uppercase; margin-top:10px; font-weight:700;">${d.personal.title}</p>
+                             
+                             <div style="margin-top:35px; margin-bottom:45px;">
+                                <p style="border-left:3px solid ${c}; padding-left:20px; font-style:italic; color:#4b5563; font-size:1.05em; line-height:1.6;">${d.personal.summary}</p>
+                             </div>
+                             
+                             <div>
+                                <h3 style="font-size:0.9em; color:#9ca3af; letter-spacing:2px; text-transform:uppercase; margin-bottom:25px; font-weight:700;">Esperienza</h3>
+                                ${d.experience.map(e => `
+                                    <div style="margin-bottom:30px;">
+                                        <h4 style="font-size:1.2em; font-weight:700; margin:0; color:#1f2937;">${e.role}</h4>
+                                        <div style="color:${c}; font-size:0.95em; font-weight:700; margin:4px 0 10px 0;">${e.company}</div>
+                                        <p style="font-size:0.95em; color:#4b5563; line-height:1.6; margin:0;">${e.desc}</p>
+                                    </div>
+                                `).join('')}
+                             </div>
+                        </div>
+                        <div style="flex:1; text-align:right;">
+                            ${d.photo ? `<div style="width:140px; height:140px; background-image:url('${d.photo}'); background-size:cover; background-position:center; margin-left:auto; margin-bottom:40px; filter:grayscale(100%);"></div>` : ''}
+                            
+                            <div style="margin-bottom:50px; font-size:0.95em; line-height:2;">
+                                <strong style="display:block; font-size:1.1em; margin-bottom:5px;">Contatti</strong>
+                                <div style="word-break:break-all;">${d.personal.email}</div>
+                                <div>${d.personal.phone}</div>
+                                <div>${d.personal.location}</div>
+                            </div>
+
+                            <div style="margin-bottom:50px;">
+                                <h3 style="font-size:0.9em; color:#9ca3af; letter-spacing:2px; text-transform:uppercase; margin-bottom:20px; font-weight:700; border-bottom:1px solid #f3f4f6; padding-bottom:5px;">Istruzione</h3>
+                                ${d.education.map(e => `<div style="margin-bottom:20px;"><div style="font-weight:700; font-size:1em; line-height:1.3;">${e.degree}</div><div style="font-size:0.9em; color:#6b7280; margin-top:3px;">${e.year}</div></div>`).join('')}
+                            </div>
+
+                            <div>
+                                <h3 style="font-size:0.9em; color:#9ca3af; letter-spacing:2px; text-transform:uppercase; margin-bottom:20px; font-weight:700; border-bottom:1px solid #f3f4f6; padding-bottom:5px;">Skills</h3>
+                                <div style="display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px;">
+                                    ${skillsArr.map(s => `<span style="border:1px solid #e5e7eb; padding:4px 8px; font-size:0.85em; color:#4b5563; border-radius:4px;">${s}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+
+                document.getElementById('cv-render-output').innerHTML = html;
+                
+                // Richiama l'auto-scaling dopo il render
+                this.autoScale();
+            },
+
+            /* --- AUTO SCALE (CRITICO PER WEBADOR) --- */
+            autoScale: function() {
+                const wrapper = document.getElementById('cv-preview-wrapper');
+                const output = document.getElementById('cv-render-output');
+                const page = output.querySelector('.cv-a4-page');
+                const badge = document.getElementById('cv-zoom-badge');
+                
+                if (!wrapper || !page) return;
+
+                // Dimensioni
+                const A4_WIDTH = 794; // approx px
+                let availW = wrapper.clientWidth - 40; // padding
+                if (availW <= 0) availW = 400; // Fallback
+
+                // Calcolo Zoom
+                let scale = availW / A4_WIDTH;
+                if (scale > 1) scale = 1; 
+
+                // Applica
+                page.style.transform = `scale(${scale})`;
+                
+                // Fix Spazio
+                const scaledH = 1123 * scale;
+                output.style.height = (scaledH + 50) + 'px';
+                output.style.width = A4_WIDTH + 'px'; // width fissa per il contenuto scalato
+
+                // Fix Allineamento Mobile (Left) vs Desktop (Center)
+                if (scale < 1) {
+                    page.style.transformOrigin = 'top left';
+                    // Centrare orizzontalmente manualmente se serve, ma left è più sicuro su mobile
+                    output.style.marginLeft = '0'; 
+                } else {
+                    page.style.transformOrigin = 'top center';
+                    output.style.marginLeft = 'auto';
+                    output.style.marginRight = 'auto';
+                }
+
+                if(badge) badge.innerText = `Zoom: ${Math.round(scale*100)}%`;
+            },
+
+            /* --- STAMPA PDF --- */
+            printPDF: function() {
+                const content = document.getElementById('cv-render-output').innerHTML;
+                const win = window.open('', '', 'height=800,width=1000');
+                
+                win.document.write('<html><head><title>Stampa CV</title>');
+                win.document.write('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@300;400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">');
+                win.document.write('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">');
+                win.document.write('<style>body { margin: 0; background: #fff; } .cv-a4-page { box-shadow: none !important; margin: 0 !important; width: 100% !important; transform: none !important; min-height: 100vh !important; } @page { margin: 0; size: auto; }</style>');
+                win.document.write('</head><body>');
+                win.document.write(content);
+                win.document.write('</body></html>');
+                
+                win.document.close();
+                win.focus();
+                
+                // Attendi caricamento immagini/font
+                setTimeout(() => {
+                    win.print();
+                    // win.close(); // Opzionale
+                }, 1000);
+            }
+        };
+
+        // AVVIO
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => window.WebadorCV.init());
+        } else {
+            window.WebadorCV.init();
+        }
+
+    })();
+    </script>
+</div>
