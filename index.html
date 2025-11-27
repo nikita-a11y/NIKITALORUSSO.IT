@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CV Creator Diamond - Generatore Professionale</title>
+    <title>CV Creator Diamond - Crea il tuo Curriculum Perfetto</title>
+    <meta name="description" content="Generatore di CV professionale gratuito. Crea, personalizza e scarica il tuo CV in PDF in pochi minuti.">
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Font & Icone -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;600;700&family=Merriweather:wght@300;400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
 
     <!-- Configurazione Tailwind -->
     <script>
@@ -31,7 +32,7 @@
                     },
                     boxShadow: {
                         'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
-                        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.15)',
+                        'paper': '0 20px 50px -12px rgba(0, 0, 0, 0.5)',
                     }
                 }
             }
@@ -44,7 +45,7 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            background-color: #020617; /* Darker background */
+            background-color: #020617; /* Sfondo applicazione scuro */
             color: #e2e8f0;
             font-family: 'Inter', sans-serif;
             overflow: hidden;
@@ -57,8 +58,8 @@
             box-sizing: border-box;
         }
 
-        /* Scrollbar personalizzata raffinata */
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        /* Scrollbar raffinata */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
@@ -67,21 +68,35 @@
         #cv-render-target {
             width: 210mm; /* A4 width default */
             min-height: 297mm; /* A4 height default */
-            background: white;
+            background-color: white; /* Fallback */
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             transform-origin: top center;
-            transition: transform 0.2s ease, width 0.2s ease, min-height 0.2s ease;
+            transition: transform 0.2s ease;
             position: relative;
             margin-bottom: 50px;
-            color: #1e293b; /* Reset text color for white paper */
+            color: #1e293b;
         }
         
-        /* Classi dinamiche per i template */
-        .cv-sidebar-left-layout {
-            /* TRUCCO PER STAMPA: Gradiente sul genitore invece che background sul figlio */
+        /* FIX BARRA LATERALE: Specificità aumentata per vincere su background-color: white */
+        #cv-render-target.cv-sidebar-left-layout {
+            /* Crea una "finta colonna" usando un gradiente che copre l'intero sfondo */
             background: linear-gradient(to right, var(--color-side-bg) 35%, white 35%);
-            min-height: 297mm; /* Assicura altezza minima */
-            height: 100%;
+        }
+
+        /* Effetto pagina piegata */
+        #cv-render-target::after {
+            content: "";
+            position: absolute;
+            bottom: 15px;
+            right: 10px;
+            width: 50%;
+            height: 20%;
+            max-width: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 10px rgba(0, 0, 0, 0.3);
+            transform: rotate(3deg);
+            z-index: -1;
+            filter: blur(10px);
         }
 
         /* --- STILI DI STAMPA CRITICI --- */
@@ -109,17 +124,21 @@
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 100% !important; /* Si adatta alla pagina di stampa */
+                width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 box-shadow: none !important;
                 transform: none !important;
                 z-index: 9999;
+                min-height: 100vh; /* Forza altezza per il gradiente */
                 
-                /* Forza stampa colori e sfondi */
+                /* Forza stampa colori e sfondi (Chrome/Safari/Edge) */
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+            
+            /* Rimuovi ombra pagina in stampa */
+            #cv-render-target::after { display: none; }
 
             /* Gestione interruzioni pagina */
             .cv-section, .cv-item {
@@ -135,29 +154,32 @@
 <div id="cv-app-root" class="app-container">
     
     <!-- EDITOR (SINISTRA) -->
-    <div class="w-full md:w-[450px] bg-surface border-r border-slate-700 flex-shrink-0 flex flex-col z-20 print-hidden shadow-2xl">
+    <div class="w-full md:w-[460px] bg-surface border-r border-slate-700 flex-shrink-0 flex flex-col z-20 print-hidden shadow-2xl relative">
         
         <!-- HEADER -->
-        <div class="p-5 border-b border-slate-700 bg-dark/50 backdrop-blur-md sticky top-0 z-30">
+        <div class="p-5 border-b border-slate-700 bg-dark/80 backdrop-blur-md sticky top-0 z-30">
             <div class="flex justify-between items-center mb-4">
-                <div class="text-white text-xl font-extrabold flex items-center gap-2 tracking-tight">
-                    <div class="w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center text-white shadow-glow">
-                        <i class="fa-solid fa-layer-group text-sm"></i>
+                <div class="text-white text-xl font-extrabold flex items-center gap-3 tracking-tight">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white shadow-glow animate-pulse">
+                        <i class="fa-solid fa-gem text-lg"></i>
                     </div>
-                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">CV Diamond</span>
+                    <div>
+                        <span class="block text-sm text-blue-400 font-medium uppercase tracking-wider">CV Creator</span>
+                        <span class="block -mt-1 text-lg bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">Diamond</span>
+                    </div>
                 </div>
             </div>
             
             <!-- Azioni Rapide -->
-            <div class="flex gap-2">
-                <button onclick="cvApp.resetData()" class="flex-1 px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-700 hover:text-white transition-all border border-slate-700 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-trash-can"></i> Reset
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="cvApp.resetData()" class="px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/50 transition-all border border-slate-700 flex flex-col items-center gap-1 group">
+                    <i class="fa-solid fa-trash-can text-sm mb-0.5 group-hover:scale-110 transition-transform"></i> Reset
                 </button>
-                <button onclick="cvApp.exportData()" class="flex-1 px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-700 hover:text-white transition-all border border-slate-700 flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-download"></i> Salva
+                <button onclick="cvApp.exportData()" class="px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold hover:bg-blue-500/10 hover:text-blue-400 hover:border-blue-500/50 transition-all border border-slate-700 flex flex-col items-center gap-1 group">
+                    <i class="fa-solid fa-download text-sm mb-0.5 group-hover:scale-110 transition-transform"></i> Salva
                 </button>
-                <label class="flex-1 px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-semibold hover:bg-slate-700 hover:text-white transition-all border border-slate-700 flex items-center justify-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-upload"></i> Carica
+                <label class="px-3 py-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold hover:bg-green-500/10 hover:text-green-400 hover:border-green-500/50 transition-all border border-slate-700 flex flex-col items-center gap-1 cursor-pointer group">
+                    <i class="fa-solid fa-upload text-sm mb-0.5 group-hover:scale-110 transition-transform"></i> Carica
                     <input type="file" accept=".json" onchange="cvApp.importData(this)" class="hidden">
                 </label>
             </div>
@@ -165,11 +187,11 @@
 
         <!-- TABS -->
         <div class="flex px-5 pt-4 gap-2">
-            <button id="tab-content" onclick="cvApp.switchTab('content', this)" class="flex-1 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-lg shadow-lg transition-all transform hover:scale-[1.02]">
-                <i class="fa-solid fa-pen-to-square mr-1"></i> Contenuto
+            <button id="tab-content" onclick="cvApp.switchTab('content', this)" class="flex-1 py-3 text-sm font-bold text-white bg-blue-600 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                <i class="fa-solid fa-pen-to-square"></i> Contenuto
             </button>
-            <button id="tab-design" onclick="cvApp.switchTab('design', this)" class="flex-1 py-2.5 text-sm font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-all transform hover:scale-[1.02]">
-                <i class="fa-solid fa-palette mr-1"></i> Design
+            <button id="tab-design" onclick="cvApp.switchTab('design', this)" class="flex-1 py-3 text-sm font-bold text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                <i class="fa-solid fa-swatchbook"></i> Design
             </button>
         </div>
 
@@ -177,119 +199,128 @@
         <div class="flex-1 overflow-y-auto custom-scrollbar p-6">
             
             <!-- PANEL: CONTENT -->
-            <div id="panel-content" class="space-y-6">
+            <div id="panel-content" class="space-y-8 pb-10">
                 
                 <!-- FOTO -->
-                <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                    <div class="flex items-center gap-4">
-                        <div id="preview-photo" class="w-16 h-16 rounded-full bg-slate-700 border-2 border-slate-600 flex items-center justify-center overflow-hidden shrink-0 shadow-lg">
-                            <i class="fa-solid fa-user text-slate-500 text-2xl"></i>
+                <div class="bg-slate-800/50 p-5 rounded-2xl border border-slate-700/50 hover:border-blue-500/30 transition-colors">
+                    <div class="flex items-center gap-5">
+                        <div id="preview-photo" class="w-20 h-20 rounded-full bg-slate-700 border-4 border-slate-600 flex items-center justify-center overflow-hidden shrink-0 shadow-lg group">
+                            <i class="fa-solid fa-user text-slate-500 text-3xl group-hover:text-slate-400 transition-colors"></i>
                         </div>
-                        <div class="flex flex-col gap-2">
-                            <input type="file" id="upload-photo" accept="image/*" style="display: none;" onchange="cvApp.uploadPhoto(this)">
-                            <button onclick="document.getElementById('upload-photo').click()" class="text-blue-400 hover:text-blue-300 text-xs font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-camera"></i> Cambia Foto
-                            </button>
-                            <button onclick="cvApp.removePhoto()" class="text-xs text-red-400 hover:text-red-300 text-left">Rimuovi</button>
+                        <div class="flex flex-col gap-2 w-full">
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Foto Profilo</h3>
+                            <div class="flex gap-2">
+                                <input type="file" id="upload-photo" accept="image/*" style="display: none;" onchange="cvApp.uploadPhoto(this)">
+                                <button onclick="document.getElementById('upload-photo').click()" class="flex-1 bg-slate-700 hover:bg-blue-600 text-white text-xs font-bold py-2 rounded-lg transition-colors">
+                                    Carica
+                                </button>
+                                <button onclick="cvApp.removePhoto()" class="flex-1 bg-slate-700 hover:bg-red-500/20 hover:text-red-400 text-slate-300 text-xs font-bold py-2 rounded-lg transition-colors border border-transparent hover:border-red-500/50">
+                                    Rimuovi
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- INFO -->
-                <div class="space-y-3">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Nome Completo</label>
-                        <input type="text" data-model="personal.name" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none placeholder-slate-600 transition-all">
+                <div class="space-y-4">
+                    <div class="relative group">
+                        <label class="text-[10px] font-bold text-blue-400 uppercase ml-1 mb-1 block">Chi sei</label>
+                        <input type="text" data-model="personal.name" placeholder="Mario Rossi" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none placeholder-slate-600 transition-all font-semibold">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-500 uppercase ml-1">Titolo Professionale</label>
-                        <input type="text" data-model="personal.title" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none placeholder-slate-600">
+                        <input type="text" data-model="personal.title" placeholder="Titolo (es. Web Designer)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3.5 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none placeholder-slate-600">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="text" data-model="personal.email" placeholder="Email" class="bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600">
-                        <input type="text" data-model="personal.phone" placeholder="Telefono" class="bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600">
+                        <input type="text" data-model="personal.email" placeholder="Email" class="bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600">
+                        <input type="text" data-model="personal.phone" placeholder="Telefono" class="bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600">
                     </div>
-                    <input type="text" data-model="personal.location" placeholder="Indirizzo / Città" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600">
+                    <input type="text" data-model="personal.location" placeholder="Indirizzo / Città" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600">
                 </div>
 
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 mb-1 block">Profilo Professionale</label>
-                    <textarea data-model="personal.summary" rows="4" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600 resize-none" placeholder="Descrivi le tue ambizioni..."></textarea>
+                <div class="bg-slate-800/30 p-1 rounded-xl">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase ml-2 mb-1 mt-2 block">Profilo (Bio)</label>
+                    <textarea data-model="personal.summary" rows="4" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600 resize-none leading-relaxed" placeholder="Scrivi una breve introduzione su di te..."></textarea>
                 </div>
 
                 <!-- LISTE -->
-                <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
-                    <div class="flex justify-between items-center mb-3">
-                        <label class="text-xs font-bold text-slate-400 uppercase flex items-center gap-2"><i class="fa-solid fa-briefcase"></i> Esperienza</label>
-                        <button onclick="cvApp.addItem('experience')" class="text-xs bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 font-bold px-2 py-1 rounded transition-colors">+ Aggiungi</button>
+                <div class="bg-slate-800/30 p-5 rounded-2xl border border-slate-700/50">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-bold text-slate-300 uppercase flex items-center gap-2"><i class="fa-solid fa-briefcase text-blue-500"></i> Esperienza</label>
+                        <button onclick="cvApp.addItem('experience')" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white font-bold px-3 py-1.5 rounded-lg transition-all border border-blue-500/20 hover:border-blue-500 shadow-sm">+ Aggiungi</button>
                     </div>
-                    <div id="list-experience" class="space-y-3"></div>
+                    <div id="list-experience" class="space-y-4"></div>
                 </div>
 
-                <div class="bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
-                    <div class="flex justify-between items-center mb-3">
-                        <label class="text-xs font-bold text-slate-400 uppercase flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i> Istruzione</label>
-                        <button onclick="cvApp.addItem('education')" class="text-xs bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 hover:text-blue-300 font-bold px-2 py-1 rounded transition-colors">+ Aggiungi</button>
+                <div class="bg-slate-800/30 p-5 rounded-2xl border border-slate-700/50">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-bold text-slate-300 uppercase flex items-center gap-2"><i class="fa-solid fa-graduation-cap text-green-500"></i> Istruzione</label>
+                        <button onclick="cvApp.addItem('education')" class="text-xs bg-green-500/10 text-green-400 hover:bg-green-500 hover:text-white font-bold px-3 py-1.5 rounded-lg transition-all border border-green-500/20 hover:border-green-500 shadow-sm">+ Aggiungi</button>
                     </div>
-                    <div id="list-education" class="space-y-3"></div>
+                    <div id="list-education" class="space-y-4"></div>
                 </div>
 
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 uppercase ml-1 mb-1 block">Competenze & Lingue</label>
-                    <textarea data-model="skills" rows="3" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600 resize-none" placeholder="Inglese C1, Photoshop, React..."></textarea>
+                    <textarea data-model="skills" rows="3" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none placeholder-slate-600 resize-none" placeholder="HTML, CSS, Leadership, Spagnolo..."></textarea>
                 </div>
             </div>
 
             <!-- PANEL: DESIGN -->
-            <div id="panel-design" style="display: none;" class="space-y-8">
+            <div id="panel-design" style="display: none;" class="space-y-8 pb-10">
                 
                 <!-- LAYOUT -->
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Layout & Struttura</label>
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Scegli il tuo stile</label>
                     <div class="grid grid-cols-3 gap-3">
-                        <button onclick="cvApp.setLayout('sidebarLeft', this)" class="tpl-card active bg-slate-800 border-2 border-blue-500 rounded-xl p-3 text-center text-white hover:bg-slate-700 transition-all group">
-                            <div class="h-12 w-full bg-slate-700 rounded-md mb-2 flex overflow-hidden border border-slate-600 group-hover:border-blue-400/50"><div class="w-1/3 bg-blue-500/50 h-full"></div><div class="w-2/3 bg-transparent h-full"></div></div>
+                        <button onclick="cvApp.setLayout('sidebarLeft', this)" class="tpl-card active bg-slate-800 border-2 border-blue-500 rounded-xl p-3 text-center text-white hover:bg-slate-700 transition-all group relative overflow-hidden">
+                            <div class="absolute inset-0 bg-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="h-14 w-full bg-slate-700 rounded-lg mb-2 flex overflow-hidden border border-slate-600 group-hover:border-blue-400/50 shadow-sm"><div class="w-1/3 bg-blue-500 h-full"></div><div class="w-2/3 bg-white h-full opacity-10"></div></div>
                             <span class="text-[10px] font-bold uppercase tracking-wider">Modern</span>
                         </button>
-                        <button onclick="cvApp.setLayout('classic', this)" class="tpl-card bg-slate-800 border-2 border-transparent rounded-xl p-3 text-center text-slate-400 hover:bg-slate-700 transition-all group">
-                            <div class="h-12 w-full bg-slate-700 rounded-md mb-2 flex flex-col border border-slate-600 group-hover:border-slate-500"><div class="w-full h-3 bg-slate-500/50 border-b border-slate-600"></div></div>
+                        <button onclick="cvApp.setLayout('classic', this)" class="tpl-card bg-slate-800 border-2 border-transparent rounded-xl p-3 text-center text-slate-400 hover:bg-slate-700 transition-all group relative overflow-hidden">
+                            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="h-14 w-full bg-slate-700 rounded-lg mb-2 flex flex-col border border-slate-600 group-hover:border-slate-500 shadow-sm"><div class="w-full h-4 bg-slate-500/50 border-b border-slate-600"></div></div>
                             <span class="text-[10px] font-bold uppercase tracking-wider">Classic</span>
                         </button>
-                        <button onclick="cvApp.setLayout('minimal', this)" class="tpl-card bg-slate-800 border-2 border-transparent rounded-xl p-3 text-center text-slate-400 hover:bg-slate-700 transition-all group">
-                            <div class="h-12 w-full bg-slate-700 rounded-md mb-2 flex border border-slate-600 group-hover:border-slate-500"><div class="w-full h-full border-l-4 border-slate-500/50 ml-2"></div></div>
+                        <button onclick="cvApp.setLayout('minimal', this)" class="tpl-card bg-slate-800 border-2 border-transparent rounded-xl p-3 text-center text-slate-400 hover:bg-slate-700 transition-all group relative overflow-hidden">
+                            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <div class="h-14 w-full bg-slate-700 rounded-lg mb-2 flex border border-slate-600 group-hover:border-slate-500 shadow-sm"><div class="w-full h-full border-l-4 border-slate-500/50 ml-3"></div></div>
                             <span class="text-[10px] font-bold uppercase tracking-wider">Minimal</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- CARTA -->
-                <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Formato Carta (Stampa)</label>
-                    <div class="flex gap-2 bg-slate-900 p-1 rounded-lg border border-slate-700">
-                        <button onclick="cvApp.setPaper('A4')" id="btn-a4" class="flex-1 py-1.5 text-xs font-bold text-white bg-slate-700 rounded shadow-sm">A4</button>
-                        <button onclick="cvApp.setPaper('Letter')" id="btn-letter" class="flex-1 py-1.5 text-xs font-bold text-slate-400 hover:text-white">Letter</button>
+                <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Formato Foglio</label>
+                    <div class="flex gap-2 bg-slate-900 p-1.5 rounded-lg border border-slate-700">
+                        <button onclick="cvApp.setPaper('A4')" id="btn-a4" class="flex-1 py-2 text-xs font-bold text-white bg-slate-700 rounded-md shadow-sm transition-all">A4 (Standard)</button>
+                        <button onclick="cvApp.setPaper('Letter')" id="btn-letter" class="flex-1 py-2 text-xs font-bold text-slate-400 hover:text-white transition-all">Letter (US)</button>
                     </div>
                 </div>
                 
                 <!-- COLORI -->
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Personalizzazione Colori</label>
-                    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-4">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-slate-300 font-medium">Accenti (Titoli)</span>
-                            <div class="relative w-8 h-8 rounded-full overflow-hidden border-2 border-white ring-2 ring-slate-700 cursor-pointer shadow-sm hover:scale-110 transition-transform">
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Colori Personalizzati</label>
+                    <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-5">
+                        <div class="flex justify-between items-center group">
+                            <span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors">Colore Accento</span>
+                            <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white ring-2 ring-slate-700 cursor-pointer shadow-md hover:scale-110 transition-transform">
                                 <input type="color" data-model="config.color" oninput="cvApp.setConfig('color', this.value)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] p-0 m-0 border-none cursor-pointer">
                             </div>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-slate-300 font-medium">Sfondo Laterale</span>
-                            <div class="relative w-8 h-8 rounded-full overflow-hidden border-2 border-white ring-2 ring-slate-700 cursor-pointer shadow-sm hover:scale-110 transition-transform">
+                        <div class="h-px bg-slate-700"></div>
+                        <div class="flex justify-between items-center group">
+                            <span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors">Sfondo Colonna</span>
+                            <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white ring-2 ring-slate-700 cursor-pointer shadow-md hover:scale-110 transition-transform">
                                 <input type="color" data-model="config.sidebarBg" oninput="cvApp.setConfig('sidebarBg', this.value)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] p-0 m-0 border-none cursor-pointer">
                             </div>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-slate-300 font-medium">Testo Sidebar</span>
-                            <div class="relative w-8 h-8 rounded-full overflow-hidden border-2 border-white ring-2 ring-slate-700 cursor-pointer shadow-sm hover:scale-110 transition-transform">
+                        <div class="h-px bg-slate-700"></div>
+                        <div class="flex justify-between items-center group">
+                            <span class="text-sm text-slate-300 font-medium group-hover:text-white transition-colors">Testo Colonna</span>
+                            <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white ring-2 ring-slate-700 cursor-pointer shadow-md hover:scale-110 transition-transform">
                                 <input type="color" data-model="config.sideText" oninput="cvApp.setConfig('sideText', this.value)" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] p-0 m-0 border-none cursor-pointer">
                             </div>
                         </div>
@@ -299,18 +330,20 @@
                 <!-- TIPOGRAFIA -->
                 <div>
                     <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Carattere</label>
-                    <select data-model="config.font" onchange="cvApp.setConfig('font', this.value)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none">
-                        <option value="Inter, sans-serif">Inter (Standard)</option>
-                        <option value="Poppins, sans-serif">Poppins (Moderno)</option>
-                        <option value="Merriweather, serif">Merriweather (Elegante)</option>
-                        <option value="Roboto Mono, monospace">Roboto Mono (Tech)</option>
+                    <select data-model="config.font" onchange="cvApp.setConfig('font', this.value)" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:border-blue-500 focus:outline-none">
+                        <option value="Inter, sans-serif">Inter (Standard Pulito)</option>
+                        <option value="Poppins, sans-serif">Poppins (Moderno Geometrico)</option>
+                        <option value="Merriweather, serif">Merriweather (Elegante Serale)</option>
+                        <option value="Roboto Mono, monospace">Roboto Mono (Tecnico)</option>
                     </select>
                 </div>
 
                 <!-- SCALA -->
                 <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block flex justify-between">Dimensione Testo <span id="scale-val" class="text-blue-400">100%</span></label>
-                    <input type="range" min="0.8" max="1.2" step="0.05" value="1" oninput="cvApp.setConfig('scale', this.value); document.getElementById('scale-val').innerText = Math.round(this.value*100) + '%'" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block flex justify-between">Dimensione Testo <span id="scale-val" class="text-blue-400 font-mono">100%</span></label>
+                    <div class="px-2">
+                        <input type="range" min="0.8" max="1.2" step="0.05" value="1" oninput="cvApp.setConfig('scale', this.value); document.getElementById('scale-val').innerText = Math.round(this.value*100) + '%'" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500 hover:accent-blue-400">
+                    </div>
                 </div>
 
             </div>
@@ -318,18 +351,18 @@
         </div>
 
         <!-- FOOTER -->
-        <div class="p-5 bg-dark/90 backdrop-blur border-t border-slate-700 print-hidden">
-            <button onclick="window.print()" class="w-full px-4 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-500 hover:to-indigo-500 transition-all shadow-glow flex items-center justify-center gap-2 transform hover:-translate-y-0.5 active:translate-y-0">
-                <i class="fa-solid fa-file-pdf"></i> Scarica PDF
+        <div class="p-6 bg-dark/95 backdrop-blur border-t border-slate-700 print-hidden">
+            <button onclick="window.print()" class="w-full px-4 py-4 bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-500 hover:to-indigo-500 transition-all shadow-glow flex items-center justify-center gap-3 transform hover:-translate-y-1 active:translate-y-0 active:shadow-none border border-white/10 group">
+                <span class="bg-white/20 p-1 rounded-full group-hover:rotate-12 transition-transform"><i class="fa-solid fa-file-pdf"></i></span> Scarica il tuo CV
             </button>
         </div>
     </div>
 
     <!-- PREVIEW (DESTRA) -->
-    <div id="preview-container" class="flex-1 bg-slate-900 relative overflow-hidden flex justify-center items-start pt-10 px-4 print-hidden bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]">
+    <div id="preview-container" class="flex-1 bg-slate-900 relative overflow-hidden flex justify-center items-start pt-12 px-4 print-hidden bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px]">
         
         <!-- Zoom Badge -->
-        <div class="absolute top-6 right-6 bg-slate-800/80 text-white text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-sm border border-slate-700 shadow-lg flex items-center gap-2 z-10">
+        <div class="absolute top-6 right-6 bg-slate-800/90 text-white text-xs font-bold px-4 py-2 rounded-full backdrop-blur-md border border-slate-600 shadow-xl flex items-center gap-2 z-10 hover:bg-slate-700 transition-colors cursor-default">
             <i class="fa-solid fa-magnifying-glass text-blue-400"></i> <span id="zoom-level">100%</span>
         </div>
 
@@ -371,7 +404,7 @@
 
         // --- GESTIONE DATI (Export/Import) ---
         loadData: function() {
-            const saved = localStorage.getItem('cv_diamond_v1');
+            const saved = localStorage.getItem('cv_diamond_v2');
             if (saved) {
                 try {
                     const loaded = JSON.parse(saved);
@@ -380,11 +413,11 @@
                 } catch(e) {}
             }
         },
-        saveData: function() { localStorage.setItem('cv_diamond_v1', JSON.stringify(this.data)); },
+        saveData: function() { localStorage.setItem('cv_diamond_v2', JSON.stringify(this.data)); },
         
         resetData: function() {
             if(confirm('Sei sicuro? Tutti i dati verranno cancellati.')) {
-                localStorage.removeItem('cv_diamond_v1');
+                localStorage.removeItem('cv_diamond_v2');
                 location.reload();
             }
         },
@@ -491,24 +524,24 @@
         },
         renderLists: function() {
             document.getElementById('list-experience').innerHTML = this.data.experience.map(i => `
-                <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 relative group transition-all hover:border-blue-500/50">
-                    <button onclick="cvApp.removeItem('experience', ${i.id})" class="absolute top-3 right-3 text-slate-600 hover:text-red-400 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 relative group transition-all hover:border-blue-500/50 hover:shadow-lg">
+                    <button onclick="cvApp.removeItem('experience', ${i.id})" class="absolute top-3 right-3 text-slate-600 hover:text-red-400 transition-colors p-1"><i class="fa-solid fa-trash-can"></i></button>
                     <input class="bg-transparent text-white font-bold w-full mb-1.5 text-sm focus:outline-none border-b border-transparent focus:border-blue-500" value="${i.role}" oninput="cvApp.updateList('experience', ${i.id}, 'role', this.value)" placeholder="Ruolo">
                     <input class="bg-transparent text-blue-400 w-full text-xs mb-3 focus:outline-none" value="${i.company}" oninput="cvApp.updateList('experience', ${i.id}, 'company', this.value)" placeholder="Azienda">
                     <div class="flex gap-2 mb-3">
-                        <input class="bg-slate-800 text-white rounded text-xs p-1.5 w-1/2 focus:outline-none border border-slate-700 focus:border-blue-500" value="${i.start}" oninput="cvApp.updateList('experience', ${i.id}, 'start', this.value)" placeholder="Dal">
-                        <input class="bg-slate-800 text-white rounded text-xs p-1.5 w-1/2 focus:outline-none border border-slate-700 focus:border-blue-500" value="${i.end}" oninput="cvApp.updateList('experience', ${i.id}, 'end', this.value)" placeholder="Al">
+                        <input class="bg-slate-800 text-white rounded-lg text-xs p-2 w-1/2 focus:outline-none border border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value="${i.start}" oninput="cvApp.updateList('experience', ${i.id}, 'start', this.value)" placeholder="Dal">
+                        <input class="bg-slate-800 text-white rounded-lg text-xs p-2 w-1/2 focus:outline-none border border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value="${i.end}" oninput="cvApp.updateList('experience', ${i.id}, 'end', this.value)" placeholder="Al">
                     </div>
-                    <textarea class="bg-slate-800 text-slate-300 rounded text-xs p-2 w-full resize-none focus:outline-none border border-slate-700 focus:border-blue-500" rows="2" oninput="cvApp.updateList('experience', ${i.id}, 'desc', this.value)" placeholder="Descrizione...">${i.desc}</textarea>
+                    <textarea class="bg-slate-800 text-slate-300 rounded-lg text-xs p-2.5 w-full resize-none focus:outline-none border border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" rows="2" oninput="cvApp.updateList('experience', ${i.id}, 'desc', this.value)" placeholder="Descrizione...">${i.desc}</textarea>
                 </div>
             `).join('');
             
             document.getElementById('list-education').innerHTML = this.data.education.map(i => `
-                <div class="bg-slate-900 p-4 rounded-lg border border-slate-700 relative group transition-all hover:border-blue-500/50">
-                    <button onclick="cvApp.removeItem('education', ${i.id})" class="absolute top-3 right-3 text-slate-600 hover:text-red-400 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 relative group transition-all hover:border-blue-500/50 hover:shadow-lg">
+                    <button onclick="cvApp.removeItem('education', ${i.id})" class="absolute top-3 right-3 text-slate-600 hover:text-red-400 transition-colors p-1"><i class="fa-solid fa-trash-can"></i></button>
                     <input class="bg-transparent text-white font-bold w-full mb-1.5 text-sm focus:outline-none border-b border-transparent focus:border-blue-500" value="${i.degree}" oninput="cvApp.updateList('education', ${i.id}, 'degree', this.value)" placeholder="Titolo">
                     <input class="bg-transparent text-blue-400 w-full text-xs mb-2 focus:outline-none" value="${i.school}" oninput="cvApp.updateList('education', ${i.id}, 'school', this.value)" placeholder="Istituto">
-                    <input class="bg-slate-800 text-white rounded text-xs p-1.5 w-full focus:outline-none border border-slate-700 focus:border-blue-500" value="${i.year}" oninput="cvApp.updateList('education', ${i.id}, 'year', this.value)" placeholder="Anno">
+                    <input class="bg-slate-800 text-white rounded-lg text-xs p-2 w-full focus:outline-none border border-slate-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500" value="${i.year}" oninput="cvApp.updateList('education', ${i.id}, 'year', this.value)" placeholder="Anno">
                 </div>
             `).join('');
         },
@@ -525,7 +558,7 @@
         removePhoto: function() { this.data.photo = null; this.saveData(); this.updatePhotoPreview(); this.render(); },
         updatePhotoPreview: function() {
             const div = document.getElementById('preview-photo');
-            div.innerHTML = this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-user text-slate-500 text-2xl"></i>`;
+            div.innerHTML = this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-user text-slate-500 text-3xl"></i>`;
         },
 
         // --- RENDER CV HTML ---
