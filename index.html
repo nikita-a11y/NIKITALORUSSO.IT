@@ -32,410 +32,498 @@
     </script>
 
     <style>
-        /* --- STILI BASE --- */
-        body, html { margin: 0; padding: 0; height: 100%; background: #f8fafc; font-family: 'Inter', sans-serif; overflow: hidden; }
+        /* --- STILI BASE APP --- */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            height: 100dvh; /* Supporto mobile moderno */
+            background: #f1f5f9; 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden; 
+        }
         
-        .app-wrapper { display: flex; height: 100vh; flex-direction: row; }
+        .app-wrapper { 
+            display: flex; 
+            height: 100%; 
+            height: 100dvh;
+            flex-direction: row; 
+            position: relative;
+        }
         
-        /* --- EDITOR SIDEBAR --- */
-        .editor-panel { width: 450px; background: white; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; z-index: 20; box-shadow: 4px 0 24px rgba(0,0,0,0.05); }
-        .editor-scroll { flex: 1; overflow-y: auto; padding: 20px; scrollbar-width: thin; }
+        /* --- EDITOR --- */
+        .editor-panel { 
+            width: 450px; 
+            background: white; 
+            border-right: 1px solid #e2e8f0; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 50; 
+            box-shadow: 10px 0 30px -10px rgba(0,0,0,0.1); 
+            height: 100%;
+        }
+        .editor-scroll { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            scrollbar-width: thin; 
+            -webkit-overflow-scrolling: touch; /* Scroll fluido su iOS */
+        }
         
-        /* --- PREVIEW AREA --- */
-        .preview-panel { flex: 1; background: #cbd5e1; position: relative; display: flex; justify-content: center; padding-top: 40px; overflow: hidden; }
-        /* Background pattern professionale */
+        /* --- ANTEPRIMA --- */
+        .preview-panel { 
+            flex: 1; 
+            background: #94a3b8; 
+            position: relative; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            padding-top: 40px; 
+            overflow: hidden; 
+            height: 100%;
+        }
+        /* Pattern sfondo tecnico */
         .preview-panel {
-            background-image: radial-gradient(#94a3b8 1px, transparent 1px);
+            background-image: linear-gradient(45deg, #cbd5e1 25%, transparent 25%), linear-gradient(-45deg, #cbd5e1 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #cbd5e1 75%), linear-gradient(-45deg, transparent 75%, #cbd5e1 75%);
             background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
-        /* --- FOGLIO A4 --- */
+        /* --- FOGLIO A4 (Il cuore del tool) --- */
         #cv-paper {
             width: 210mm;
             min-height: 297mm;
-            background: white;
-            box-shadow: 0 20px 60px -10px rgba(0,0,0,0.3);
+            background-color: white;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
             transform-origin: top center;
-            transition: transform 0.1s; /* Più reattivo */
+            transition: transform 0.1s ease-out;
+            position: relative;
+            margin-bottom: 100px;
             color: #1e293b;
+            overflow: hidden; 
         }
 
-        /* Classe speciale per il layout con barra laterale che va fino in fondo */
-        .layout-sidebar-left {
-            background: linear-gradient(to right, var(--col-side-bg) 35%, white 35%);
+        /* --- FIX BARRA LATERALE INFINITA --- */
+        #cv-paper.layout-sidebar-left::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 35%;
+            background-color: var(--col-side-bg);
+            z-index: 0; 
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
-        /* --- MOBILE TABS (Visibili solo su mobile) --- */
+        /* --- MOBILE --- */
         .mobile-tabs { display: none; }
-
-        /* --- RESPONSIVE MOBILE --- */
+        
         @media (max-width: 900px) {
-            .app-wrapper { flex-direction: column; height: 100vh; }
-            .editor-panel { width: 100%; flex: 1; border-right: none; }
-            .preview-panel { flex: 1; padding-top: 20px; background: #e2e8f0; }
+            .app-wrapper { flex-direction: column; }
             
-            /* Gestione Tabs Mobile */
-            .mobile-tabs { display: flex; background: #0f172a; padding: 10px; gap: 10px; }
-            .mobile-tab-btn { flex: 1; padding: 10px; border-radius: 8px; color: white; text-align: center; font-size: 14px; font-weight: 600; opacity: 0.6; }
-            .mobile-tab-btn.active { background: #3b82f6; opacity: 1; }
+            /* Pannelli sovrapposti su mobile */
+            .editor-panel { 
+                width: 100%; 
+                border-right: none; 
+                position: absolute; 
+                top: 0; bottom: 60px; left: 0; right: 0; 
+                height: auto;
+            }
+            .preview-panel { 
+                position: absolute; 
+                top: 0; bottom: 60px; left: 0; right: 0; 
+                z-index: 40; 
+                background: #e2e8f0; 
+                height: auto;
+            }
+            
+            .mobile-tabs { 
+                display: flex; 
+                position: fixed; 
+                bottom: 0; left: 0; right: 0; 
+                height: 60px; 
+                background: white; 
+                border-top: 1px solid #e2e8f0; 
+                z-index: 60; 
+                box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            }
+            .mob-btn { 
+                flex: 1; 
+                display: flex; 
+                flex-direction: column; 
+                align-items: center; 
+                justify-content: center; 
+                font-size: 10px; 
+                color: #64748b; 
+                font-weight: 600; 
+                border: none;
+                background: transparent;
+            }
+            .mob-btn.active { color: #2563eb; background: #eff6ff; }
+            .mob-btn i { font-size: 18px; margin-bottom: 2px; }
 
-            /* Nascondi pannelli in base al tab attivo */
-            .show-editor .preview-panel { display: none; }
-            .show-preview .editor-panel { display: none; }
-            .show-preview .mobile-tabs { display: flex; } /* Mantieni tabs visibili */
+            /* Visibilità Mobile */
+            body.view-editor .preview-panel { display: none !important; }
+            body.view-preview .editor-panel { display: none !important; }
         }
 
-        /* --- STILI DI STAMPA (CRITICO) --- */
+        /* --- CSS STAMPA (THE REAL FIX - PDF PERFETTO) --- */
         @media print {
-            body * { visibility: hidden; }
-            .app-wrapper { display: block !important; height: auto !important; overflow: visible !important; }
-            #cv-paper, #cv-paper * { visibility: visible; }
-            
-            #cv-paper {
-                position: absolute;
-                left: 0;
-                top: 0;
+            /* 1. Nascondi TUTTA l'interfaccia utente */
+            .editor-panel, .mobile-tabs, .zoom-badge, .header-bar, .print-hidden {
+                display: none !important;
+            }
+
+            /* 2. Resetta il contenitore dell'app */
+            body, html, .app-wrapper, .preview-panel {
+                background: white !important;
+                height: auto !important;
                 width: 100% !important;
+                overflow: visible !important;
+                position: static !important;
+                display: block !important;
                 margin: 0 !important;
                 padding: 0 !important;
+            }
+
+            /* 3. Posiziona il foglio A4 */
+            #cv-paper {
+                /* Reset posizionamento */
+                position: relative !important;
+                left: 0 !important;
+                top: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                
+                /* Forza dimensioni */
+                width: 100% !important;
+                min-height: 100vh !important;
+                
+                /* Rimuovi effetti schermo */
                 box-shadow: none !important;
                 transform: none !important;
-                min-height: 100vh;
+                
+                /* FORZA COLORI */
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+                background-color: white !important;
             }
+            
+            /* Forza background su elementi specifici per sicurezza */
+            #cv-paper.layout-sidebar-left::before {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                background-color: var(--col-side-bg) !important;
+                print-color-adjust: exact;
+            }
+
+            /* 4. Gestione interruzioni pagina */
+            .cv-block, section { page-break-inside: avoid; }
+            h3, h2, h1 { page-break-after: avoid; }
+            
             @page { margin: 0; size: auto; }
         }
     </style>
 </head>
-<body class="show-editor" id="body-root">
+<body class="view-editor" id="body-root">
 
-    <!-- CONTENITORE PRINCIPALE -->
-    <div class="app-wrapper">
+<div class="app-wrapper">
 
-        <!-- EDITOR (SINISTRA) -->
-        <div class="editor-panel">
-            
-            <!-- HEADER BRANDING -->
-            <div class="p-5 border-b border-gray-200 bg-white flex justify-between items-center sticky top-0 z-30 shadow-sm">
-                <div>
-                    <h1 class="text-lg font-extrabold text-slate-800 tracking-tight flex items-center gap-2">
-                        <i class="fa-solid fa-file-signature text-blue-600"></i> CV Creator
-                    </h1>
-                    <a href="https://www.nikitalorusso.com" target="_blank" class="text-[10px] text-slate-500 font-medium hover:text-blue-600 transition-colors uppercase tracking-wider">
-                        by Nikita Lorusso <i class="fa-solid fa-arrow-up-right-from-square ml-0.5"></i>
-                    </a>
-                </div>
-                <!-- Call to Action Servizi -->
-                <a href="https://www.nikitalorusso.com/servizi" target="_blank" class="bg-gradient-to-r from-slate-800 to-slate-900 text-white text-xs px-3 py-2 rounded-lg font-bold hover:shadow-lg transition-all flex items-center gap-2 border border-slate-700">
-                    <span>I Miei Servizi</span> <i class="fa-solid fa-gem text-yellow-400"></i>
+    <!-- SIDEBAR EDITOR -->
+    <div class="editor-panel">
+        <!-- HEADER -->
+        <div class="p-4 border-b border-gray-200 bg-white sticky top-0 z-30 flex justify-between items-center shadow-sm header-bar">
+            <div>
+                <h1 class="font-extrabold text-slate-800 text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-layer-group text-blue-600"></i> CV Creator
+                </h1>
+                <a href="https://www.nikitalorusso.com" target="_blank" class="text-[10px] uppercase font-bold text-slate-400 hover:text-blue-600 tracking-wider transition-colors">
+                    by Nikita Lorusso
                 </a>
             </div>
+            <a href="https://www.nikitalorusso.com/servizi" target="_blank" class="bg-slate-900 text-white text-xs px-3 py-2 rounded-lg font-bold hover:bg-blue-600 transition-colors flex items-center gap-2 shadow-lg transform hover:-translate-y-0.5">
+                I Miei Servizi <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
 
-            <!-- MENU TABS EDITOR -->
-            <div class="flex bg-slate-50 border-b border-gray-200 p-1">
-                <button onclick="app.setEditorTab('content')" id="btn-tab-content" class="flex-1 py-2 text-sm font-bold text-blue-600 bg-white shadow-sm rounded border border-gray-200 transition-all">Dati</button>
-                <button onclick="app.setEditorTab('design')" id="btn-tab-design" class="flex-1 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-all">Stile</button>
-            </div>
+        <!-- TABS -->
+        <div class="flex p-2 gap-2 bg-slate-50 border-b border-gray-200 header-bar">
+            <button onclick="app.setTab('content')" id="tab-btn-content" class="flex-1 py-2 text-xs font-bold uppercase rounded-md bg-white border border-gray-200 text-blue-600 shadow-sm transition-all">Dati</button>
+            <button onclick="app.setTab('design')" id="tab-btn-design" class="flex-1 py-2 text-xs font-bold uppercase rounded-md text-slate-500 hover:bg-white hover:shadow-sm transition-all">Design</button>
+        </div>
 
-            <!-- CONTENUTO EDITOR -->
-            <div class="editor-scroll">
-                
-                <!-- TAB DATI -->
-                <div id="panel-content" class="space-y-6">
-                    <!-- Foto -->
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex items-center gap-4">
-                        <div id="photo-preview" class="w-16 h-16 rounded-full bg-white border-2 border-slate-300 flex items-center justify-center overflow-hidden shrink-0 text-slate-300">
-                            <i class="fa-solid fa-user text-2xl"></i>
-                        </div>
-                        <div class="flex flex-col gap-2 w-full">
-                            <label class="text-[10px] uppercase font-bold text-slate-400">Foto Profilo</label>
-                            <div class="flex gap-2">
-                                <button onclick="document.getElementById('photo-input').click()" class="flex-1 bg-white border border-slate-300 text-slate-700 text-xs font-bold py-1.5 rounded hover:bg-slate-50">Carica</button>
-                                <button onclick="app.removePhoto()" class="flex-1 bg-white border border-red-200 text-red-500 text-xs font-bold py-1.5 rounded hover:bg-red-50">Rimuovi</button>
-                                <input type="file" id="photo-input" hidden accept="image/*" onchange="app.handlePhoto(this)">
-                            </div>
-                        </div>
+        <!-- SCROLL AREA -->
+        <div class="editor-scroll">
+            
+            <!-- PANEL: CONTENT -->
+            <div id="panel-content" class="space-y-6">
+                <!-- Foto -->
+                <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 flex items-center gap-4">
+                    <div id="photo-preview" class="w-16 h-16 rounded-full bg-white border-2 border-blue-200 flex items-center justify-center overflow-hidden shrink-0 text-blue-200">
+                        <i class="fa-solid fa-user text-2xl"></i>
                     </div>
-
-                    <!-- Info -->
-                    <div class="space-y-3">
-                        <input type="text" data-bind="personal.name" placeholder="Nome Completo" class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none">
-                        <input type="text" data-bind="personal.title" placeholder="Titolo (es. Web Designer)" class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="text" data-bind="personal.email" placeholder="Email" class="p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                            <input type="text" data-bind="personal.phone" placeholder="Telefono" class="p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <div class="w-full">
+                        <label class="text-[10px] uppercase font-bold text-blue-400 mb-1 block">Foto Profilo</label>
+                        <div class="flex gap-2">
+                            <button onclick="document.getElementById('upl').click()" class="flex-1 bg-blue-600 text-white text-xs font-bold py-2 rounded-lg hover:bg-blue-700 transition-colors">Carica</button>
+                            <button onclick="app.remPhoto()" class="flex-1 bg-white border border-red-200 text-red-500 text-xs font-bold py-2 rounded-lg hover:bg-red-50 transition-colors">Elimina</button>
+                            <input type="file" id="upl" hidden accept="image/*" onchange="app.handlePhoto(this)">
                         </div>
-                        <input type="text" data-bind="personal.location" placeholder="Città" class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                        <textarea data-bind="personal.summary" rows="4" placeholder="Breve profilo..." class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none"></textarea>
-                    </div>
-
-                    <!-- Liste Dinamiche -->
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-xs font-bold text-slate-500 uppercase">Esperienza</h3>
-                            <button onclick="app.addList('experience')" class="text-blue-600 text-xs font-bold hover:underline">+ Aggiungi</button>
-                        </div>
-                        <div id="list-experience" class="space-y-3"></div>
-                        
-                        <div class="flex justify-between items-center pt-2">
-                            <h3 class="text-xs font-bold text-slate-500 uppercase">Formazione</h3>
-                            <button onclick="app.addList('education')" class="text-blue-600 text-xs font-bold hover:underline">+ Aggiungi</button>
-                        </div>
-                        <div id="list-education" class="space-y-3"></div>
-                    </div>
-
-                    <!-- Skills -->
-                    <div>
-                        <h3 class="text-xs font-bold text-slate-500 uppercase mb-2">Competenze (virgola)</h3>
-                        <textarea data-bind="skills" rows="3" class="w-full p-3 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none resize-none"></textarea>
                     </div>
                 </div>
 
-                <!-- TAB STILE -->
-                <div id="panel-design" class="hidden space-y-8">
-                    <!-- Layout -->
-                    <div>
-                        <h3 class="text-xs font-bold text-slate-500 uppercase mb-3">Layout</h3>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="app.setTemplate('modern')" class="layout-btn active border-2 border-blue-600 bg-blue-50 p-2 rounded-lg text-center" id="tpl-modern">
-                                <div class="h-8 w-full bg-white border border-slate-200 mb-1 flex overflow-hidden"><div class="w-1/3 bg-slate-400"></div></div>
-                                <span class="text-[10px] font-bold text-blue-700">Modern</span>
-                            </button>
-                            <button onclick="app.setTemplate('classic')" class="layout-btn border-2 border-slate-200 p-2 rounded-lg text-center hover:bg-slate-50" id="tpl-classic">
-                                <div class="h-8 w-full bg-white border border-slate-200 mb-1 flex flex-col"><div class="w-full h-2 border-b border-slate-300"></div></div>
-                                <span class="text-[10px] font-bold text-slate-500">Classic</span>
-                            </button>
-                            <button onclick="app.setTemplate('minimal')" class="layout-btn border-2 border-slate-200 p-2 rounded-lg text-center hover:bg-slate-50" id="tpl-minimal">
-                                <div class="h-8 w-full bg-white border border-slate-200 mb-1 flex"><div class="w-1 h-full bg-slate-400 ml-1"></div></div>
-                                <span class="text-[10px] font-bold text-slate-500">Minimal</span>
-                            </button>
-                        </div>
+                <!-- Dati -->
+                <div class="space-y-3">
+                    <input type="text" data-bind="personal.name" placeholder="Nome Completo" class="w-full p-3 bg-white border border-gray-300 rounded-lg text-sm font-bold focus:border-blue-500 outline-none transition-shadow focus:shadow-md">
+                    <input type="text" data-bind="personal.title" placeholder="Job Title" class="w-full p-3 bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none transition-shadow focus:shadow-md">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" data-bind="personal.email" placeholder="Email" class="p-3 bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none transition-shadow focus:shadow-md">
+                        <input type="text" data-bind="personal.phone" placeholder="Telefono" class="p-3 bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none transition-shadow focus:shadow-md">
                     </div>
+                    <input type="text" data-bind="personal.location" placeholder="Città" class="w-full p-3 bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none transition-shadow focus:shadow-md">
+                    <textarea data-bind="personal.summary" rows="4" placeholder="Breve bio professionale..." class="w-full p-3 bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none resize-none transition-shadow focus:shadow-md"></textarea>
+                </div>
 
-                    <!-- Colori -->
-                    <div>
-                        <h3 class="text-xs font-bold text-slate-500 uppercase mb-3">Colori</h3>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center bg-slate-50 p-2 rounded">
-                                <span class="text-xs font-bold text-slate-600">Colore Principale</span>
-                                <input type="color" oninput="app.setConfig('color', this.value)" value="#2563eb" class="w-8 h-8 cursor-pointer rounded">
-                            </div>
-                            <div class="flex justify-between items-center bg-slate-50 p-2 rounded">
-                                <span class="text-xs font-bold text-slate-600">Sfondo Sidebar</span>
-                                <input type="color" oninput="app.setConfig('sideBg', this.value)" value="#1e293b" class="w-8 h-8 cursor-pointer rounded">
-                            </div>
-                            <div class="flex justify-between items-center bg-slate-50 p-2 rounded">
-                                <span class="text-xs font-bold text-slate-600">Testo Sidebar</span>
-                                <input type="color" oninput="app.setConfig('sideText', this.value)" value="#ffffff" class="w-8 h-8 cursor-pointer rounded">
-                            </div>
-                        </div>
+                <!-- Liste -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-end border-b border-gray-200 pb-1">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Esperienza</label>
+                        <button onclick="app.add('experience')" class="text-blue-600 text-xs font-bold hover:bg-blue-50 px-2 py-1 rounded transition-colors">+ Aggiungi</button>
                     </div>
+                    <div id="list-experience" class="space-y-3"></div>
 
-                    <!-- Font -->
-                    <div>
-                        <h3 class="text-xs font-bold text-slate-500 uppercase mb-3">Font</h3>
-                        <select onchange="app.setConfig('font', this.value)" class="w-full p-2 border border-slate-300 rounded text-sm bg-white">
-                            <option value="'Inter', sans-serif">Inter (Standard)</option>
-                            <option value="'Poppins', sans-serif">Poppins (Moderno)</option>
-                            <option value="'Merriweather', serif">Merriweather (Elegante)</option>
-                            <option value="'Roboto Mono', monospace">Roboto Mono (Tech)</option>
-                        </select>
+                    <div class="flex justify-between items-end border-b border-gray-200 pb-1 pt-2">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Istruzione</label>
+                        <button onclick="app.add('education')" class="text-blue-600 text-xs font-bold hover:bg-blue-50 px-2 py-1 rounded transition-colors">+ Aggiungi</button>
+                    </div>
+                    <div id="list-education" class="space-y-3"></div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-1 block">Skills (Virgola)</label>
+                    <textarea data-bind="skills" rows="2" class="w-full p-3 bg-white border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none resize-none transition-shadow focus:shadow-md"></textarea>
+                </div>
+            </div>
+
+            <!-- PANEL: DESIGN -->
+            <div id="panel-design" class="hidden space-y-8">
+                <!-- Layout -->
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Modello</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="app.setTpl('modern')" id="tpl-modern" class="tpl-btn active border-2 border-blue-600 bg-blue-50 p-2 rounded-lg text-center transition-all hover:shadow-md">
+                            <div class="h-8 w-full bg-white border border-gray-300 mb-1 flex overflow-hidden"><div class="w-1/3 bg-slate-400"></div></div>
+                            <span class="text-[10px] font-bold text-blue-700">Modern</span>
+                        </button>
+                        <button onclick="app.setTpl('classic')" id="tpl-classic" class="tpl-btn border-2 border-gray-200 p-2 rounded-lg text-center hover:bg-slate-50 transition-all hover:shadow-md">
+                            <div class="h-8 w-full bg-white border border-gray-300 mb-1 flex flex-col"><div class="w-full h-2 border-b border-gray-300"></div></div>
+                            <span class="text-[10px] font-bold text-slate-500">Classic</span>
+                        </button>
+                        <button onclick="app.setTpl('minimal')" id="tpl-minimal" class="tpl-btn border-2 border-gray-200 p-2 rounded-lg text-center hover:bg-slate-50 transition-all hover:shadow-md">
+                            <div class="h-8 w-full bg-white border border-gray-300 mb-1 flex"><div class="w-1 h-full bg-slate-400 ml-1"></div></div>
+                            <span class="text-[10px] font-bold text-slate-500">Minimal</span>
+                        </button>
                     </div>
                 </div>
 
+                <!-- Config -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-2 border border-gray-200 rounded-lg">
+                        <span class="text-xs font-bold text-slate-600">Colore Accento</span>
+                        <input type="color" oninput="app.cfg('color', this.value)" value="#2563eb" class="w-8 h-8 rounded cursor-pointer border-none p-0">
+                    </div>
+                    <div class="flex items-center justify-between p-2 border border-gray-200 rounded-lg">
+                        <span class="text-xs font-bold text-slate-600">Sfondo Sidebar</span>
+                        <input type="color" oninput="app.cfg('sideBg', this.value)" value="#1e293b" class="w-8 h-8 rounded cursor-pointer border-none p-0">
+                    </div>
+                    <div class="flex items-center justify-between p-2 border border-gray-200 rounded-lg">
+                        <span class="text-xs font-bold text-slate-600">Testo Sidebar</span>
+                        <input type="color" oninput="app.cfg('sideText', this.value)" value="#ffffff" class="w-8 h-8 rounded cursor-pointer border-none p-0">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase mb-2 block">Font</label>
+                    <select onchange="app.cfg('font', this.value)" class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-white outline-none focus:border-blue-500">
+                        <option value="Inter, sans-serif">Inter (Standard)</option>
+                        <option value="Poppins, sans-serif">Poppins (Moderno)</option>
+                        <option value="Merriweather, serif">Merriweather (Elegante)</option>
+                        <option value="Roboto Mono, monospace">Roboto Mono (Tech)</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- FOOTER AZIONI -->
-            <div class="p-4 border-t border-gray-200 bg-white">
-                <button onclick="app.downloadPDF()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all transform active:scale-95">
-                    <i class="fa-solid fa-download"></i> Scarica PDF
-                </button>
-            </div>
         </div>
 
-        <!-- ANTEPRIMA (DESTRA/MOBILE TAB) -->
-        <div class="preview-panel" id="preview-container">
-            <!-- Badge Zoom -->
-            <div class="absolute top-4 right-4 bg-slate-800/80 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 hidden md:block">
-                Zoom: <span id="zoom-val">100%</span>
-            </div>
-
-            <!-- FOGLIO REALE -->
-            <div id="cv-paper">
-                <!-- Contenuto iniettato via JS -->
-            </div>
-        </div>
-
-        <!-- NAVIGAZIONE MOBILE (FIXED BOTTOM) -->
-        <div class="mobile-tabs fixed bottom-0 w-full z-50">
-            <button onclick="app.setMobileView('editor')" class="mobile-tab-btn active" id="mob-btn-editor">
-                <i class="fa-solid fa-pen"></i> Modifica
+        <!-- FOOTER -->
+        <div class="p-4 border-t border-gray-200 bg-white header-bar">
+            <button onclick="app.download()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95">
+                <i class="fa-solid fa-download"></i> Scarica PDF
             </button>
-            <button onclick="app.setMobileView('preview')" class="mobile-tab-btn" id="mob-btn-preview">
-                <i class="fa-solid fa-eye"></i> Anteprima
-            </button>
         </div>
-
     </div>
+
+    <!-- PREVIEW -->
+    <div class="preview-panel" id="preview-container">
+        <div class="absolute top-4 right-4 bg-slate-800/80 text-white text-[10px] font-bold px-3 py-1 rounded-full z-10 zoom-badge print-hidden backdrop-blur-md">
+            Zoom: <span id="zoom-txt">100%</span>
+        </div>
+        
+        <!-- FOGLIO A4 -->
+        <div id="cv-paper">
+            <!-- Renderizzato da JS -->
+        </div>
+    </div>
+
+    <!-- MOBILE TABS -->
+    <div class="mobile-tabs mobile-only print-hidden">
+        <button onclick="app.mob('editor')" class="mob-btn active" id="mb-edit"><i class="fa-solid fa-pen"></i>Editor</button>
+        <button onclick="app.mob('preview')" class="mob-btn" id="mb-prev"><i class="fa-solid fa-eye"></i>Anteprima</button>
+    </div>
+
+</div>
 
 <script>
     const app = {
         data: {
-            personal: { name: 'Mario Rossi', title: 'Web Developer', email: 'mario@email.com', phone: '333 1234567', location: 'Milano', summary: 'Sviluppatore appassionato con esperienza nella creazione di siti web moderni e funzionali.' },
-            experience: [{ id: 1, role: 'Frontend Dev', company: 'Tech Agency', start: '2021', end: 'Oggi', desc: 'Sviluppo interfacce utente responsive.' }],
-            education: [{ id: 1, degree: 'Diploma Informatica', school: 'Istituto Tecnico', year: '2020' }],
-            skills: 'HTML, CSS, JavaScript, React, Git',
+            personal: { name: 'Mario Rossi', title: 'Web Developer', email: 'mario@email.com', phone: '333 1234567', location: 'Milano', summary: 'Sviluppatore web appassionato e creativo.' },
+            experience: [{ id: 1, role: 'Frontend Dev', company: 'Tech Agency', start: '2021', end: 'Oggi', desc: 'Sviluppo interfacce responsive.' }],
+            education: [{ id: 1, degree: 'Diploma Informatica', school: 'ITIS', year: '2020' }],
+            skills: 'HTML, CSS, JS, React',
             photo: null,
             config: { template: 'modern', color: '#2563eb', sideBg: '#1e293b', sideText: '#ffffff', font: 'Inter, sans-serif' }
         },
 
-        init: function() {
-            // Load from storage
-            const saved = localStorage.getItem('nikita_cv_data');
-            if(saved) try { this.data = {...this.data, ...JSON.parse(saved)}; } catch(e){}
+        init() {
+            // Load
+            const s = localStorage.getItem('nl_cv_v4');
+            if(s) try { this.data = {...this.data, ...JSON.parse(s)}; } catch(e){}
             
-            this.bindInputs();
-            this.renderLists();
-            this.updatePhotoUI();
-            this.render();
+            this.bind(); this.renderL(); this.updPh(); this.render();
             
-            // Observer per auto-zoom
-            const obs = new ResizeObserver(() => this.autoScale());
-            obs.observe(document.getElementById('preview-container'));
-            setTimeout(() => this.autoScale(), 200);
+            // Auto Zoom
+            new ResizeObserver(() => this.scale()).observe(document.getElementById('preview-container'));
+            setTimeout(() => this.scale(), 100);
         },
 
-        save: function() {
-            localStorage.setItem('nikita_cv_data', JSON.stringify(this.data));
+        save() {
+            localStorage.setItem('nl_cv_v4', JSON.stringify(this.data));
             this.render();
         },
 
-        bindInputs: function() {
+        bind() {
             document.querySelectorAll('[data-bind]').forEach(el => {
                 const [p, k] = el.getAttribute('data-bind').split('.');
                 el.value = this.data[p][k] || '';
-                el.oninput = (e) => {
-                    this.data[p][k] = e.target.value;
-                    this.save();
-                };
+                el.oninput = (e) => { this.data[p][k] = e.target.value; this.save(); };
             });
         },
 
-        /* --- GESTIONE FOTO --- */
-        handlePhoto: function(el) {
+        // Foto
+        handlePhoto(el) {
             if(el.files[0]) {
                 const r = new FileReader();
-                r.onload = (e) => { this.data.photo = e.target.result; this.updatePhotoUI(); this.save(); };
+                r.onload = (e) => { this.data.photo = e.target.result; this.updPh(); this.save(); };
                 r.readAsDataURL(el.files[0]);
             }
         },
-        removePhoto: function() { this.data.photo = null; this.updatePhotoUI(); this.save(); },
-        updatePhotoUI: function() {
-            const d = document.getElementById('photo-preview');
-            d.innerHTML = this.data.photo ? `<img src="${this.data.photo}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-user text-2xl"></i>`;
+        remPhoto() { this.data.photo = null; this.updPh(); this.save(); },
+        updPh() {
+            document.getElementById('photo-preview').innerHTML = this.data.photo ? 
+                `<img src="${this.data.photo}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-user text-2xl"></i>`;
         },
 
-        /* --- LISTE --- */
-        addList: function(type) {
-            this.data[type].unshift({ id: Date.now(), role: 'Ruolo', degree: 'Titolo', company: 'Azienda', school: 'Scuola', start: '', end: '', year: '', desc: '' });
-            this.renderLists(); this.save();
+        // Liste
+        add(t) {
+            this.data[t].unshift({ id: Date.now(), role:'Ruolo', degree:'Titolo', company:'Ente', school:'Scuola', start:'', end:'', year:'', desc:'' });
+            this.renderL(); this.save();
         },
-        removeList: function(type, id) {
-            if(confirm('Rimuovere?')) {
-                this.data[type] = this.data[type].filter(i => i.id !== id);
-                this.renderLists(); this.save();
-            }
+        rem(t, id) {
+            if(confirm('Eliminare?')) { this.data[t] = this.data[t].filter(i=>i.id!==id); this.renderL(); this.save(); }
         },
-        updateList: function(type, id, key, val) {
-            this.data[type].find(i => i.id === id)[key] = val;
-            this.save();
-        },
-        renderLists: function() {
-            ['experience', 'education'].forEach(type => {
-                document.getElementById(`list-${type}`).innerHTML = this.data[type].map(i => `
-                    <div class="bg-white border border-slate-200 p-3 rounded-lg relative group">
-                        <button onclick="app.removeList('${type}', ${i.id})" class="absolute top-2 right-2 text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
-                        <input class="w-full font-bold text-sm mb-1 outline-none" value="${i[type === 'experience' ? 'role' : 'degree']}" oninput="app.updateList('${type}', ${i.id}, '${type === 'experience' ? 'role' : 'degree'}', this.value)" placeholder="Titolo">
-                        <input class="w-full text-xs text-slate-500 mb-2 outline-none" value="${i[type === 'experience' ? 'company' : 'school']}" oninput="app.updateList('${type}', ${i.id}, '${type === 'experience' ? 'company' : 'school'}', this.value)" placeholder="Ente">
+        updList(t, id, k, v) { this.data[t].find(i=>i.id===id)[k] = v; this.save(); },
+        renderL() {
+            ['experience', 'education'].forEach(t => {
+                document.getElementById('list-'+t).innerHTML = this.data[t].map(i => `
+                    <div class="bg-white border border-gray-200 p-3 rounded-lg relative group transition-shadow hover:shadow-md">
+                        <button onclick="app.rem('${t}', ${i.id})" class="absolute top-2 right-2 text-gray-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                        <input class="w-full font-bold text-sm mb-1 outline-none" value="${i[t==='experience'?'role':'degree']}" oninput="app.updList('${t}', ${i.id}, '${t==='experience'?'role':'degree'}', this.value)" placeholder="Titolo">
+                        <input class="w-full text-xs text-slate-500 mb-2 outline-none" value="${i[t==='experience'?'company':'school']}" oninput="app.updList('${t}', ${i.id}, '${t==='experience'?'company':'school'}', this.value)" placeholder="Ente">
                         <div class="flex gap-2 mb-2">
-                            ${type === 'experience' ? 
-                                `<input class="w-1/2 bg-slate-50 p-1 rounded text-xs outline-none" value="${i.start}" oninput="app.updateList('${type}', ${i.id}, 'start', this.value)" placeholder="Dal">
-                                 <input class="w-1/2 bg-slate-50 p-1 rounded text-xs outline-none" value="${i.end}" oninput="app.updateList('${type}', ${i.id}, 'end', this.value)" placeholder="Al">` 
-                                : `<input class="w-full bg-slate-50 p-1 rounded text-xs outline-none" value="${i.year}" oninput="app.updateList('${type}', ${i.id}, 'year', this.value)" placeholder="Anno">`
+                            ${t==='experience' ? 
+                                `<input class="w-1/2 bg-slate-50 p-1.5 rounded text-xs outline-none" value="${i.start}" oninput="app.updList('${t}', ${i.id}, 'start', this.value)" placeholder="Da"><input class="w-1/2 bg-slate-50 p-1.5 rounded text-xs outline-none" value="${i.end}" oninput="app.updList('${t}', ${i.id}, 'end', this.value)" placeholder="A">` :
+                                `<input class="w-full bg-slate-50 p-1.5 rounded text-xs outline-none" value="${i.year}" oninput="app.updList('${t}', ${i.id}, 'year', this.value)" placeholder="Anno">`
                             }
                         </div>
-                        ${type === 'experience' ? `<textarea class="w-full text-xs p-2 bg-slate-50 rounded outline-none resize-none" rows="2" oninput="app.updateList('${type}', ${i.id}, 'desc', this.value)" placeholder="Descrizione...">${i.desc}</textarea>` : ''}
+                        ${t==='experience' ? `<textarea class="w-full text-xs p-2 bg-slate-50 rounded outline-none resize-none" rows="2" oninput="app.updList('${t}', ${i.id}, 'desc', this.value)" placeholder="Descrizione...">${i.desc}</textarea>` : ''}
                     </div>
                 `).join('');
             });
         },
 
-        /* --- CONFIG & LAYOUT --- */
-        setConfig: function(k, v) { this.data.config[k] = v; this.save(); },
-        setTemplate: function(t) {
+        // Config
+        cfg(k, v) { this.data.config[k] = v; this.save(); },
+        setTpl(t) {
             this.data.config.template = t;
-            document.querySelectorAll('.layout-btn').forEach(b => {
-                b.className = 'layout-btn border-2 border-slate-200 p-2 rounded-lg text-center hover:bg-slate-50';
+            document.querySelectorAll('.tpl-btn').forEach(b => {
+                b.className = 'tpl-btn border-2 border-gray-200 p-2 rounded-lg text-center hover:bg-slate-50 transition-all';
                 b.querySelector('span').className = 'text-[10px] font-bold text-slate-500';
             });
-            const active = document.getElementById('tpl-'+t);
-            active.className = 'layout-btn active border-2 border-blue-600 bg-blue-50 p-2 rounded-lg text-center';
-            active.querySelector('span').className = 'text-[10px] font-bold text-blue-700';
+            const a = document.getElementById('tpl-'+t);
+            a.className = 'tpl-btn active border-2 border-blue-600 bg-blue-50 p-2 rounded-lg text-center transition-all';
+            a.querySelector('span').className = 'text-[10px] font-bold text-blue-700';
             this.save();
         },
 
-        /* --- RENDERER HTML --- */
-        render: function() {
+        // Render A4
+        render() {
             const d = this.data;
             const c = d.config;
-            const target = document.getElementById('cv-paper');
-            const skills = d.skills.split(',').filter(s=>s.trim());
+            const t = document.getElementById('cv-paper');
+            const sk = d.skills.split(',').filter(s=>s.trim());
 
-            // Variabili CSS
-            target.style.setProperty('--col-prime', c.color);
-            target.style.setProperty('--col-side-bg', c.sideBg);
-            target.style.setProperty('--col-side-text', c.sideText);
-            target.style.fontFamily = c.font;
+            t.style.setProperty('--col-prime', c.color);
+            t.style.setProperty('--col-side-bg', c.sideBg);
+            t.style.setProperty('--col-side-text', c.sideText);
+            t.style.fontFamily = c.font;
 
-            // FIX BARRA LATERALE: Applica classe al contenitore
-            if(c.template === 'modern') target.classList.add('layout-sidebar-left');
-            else target.classList.remove('layout-sidebar-left');
+            // FIX CLASS for SIDEBAR (Importante per il CSS ::before)
+            t.className = c.template === 'modern' ? 'layout-sidebar-left' : '';
 
-            let html = '';
+            let h = '';
 
-            // 1. MODERN (Barra Sinistra)
+            // MODERN (Sidebar)
             if(c.template === 'modern') {
-                html = `
+                h = `
                 <div class="flex h-full min-h-[inherit]">
                     <div class="w-[35%] p-8 text-[var(--col-side-text)] flex flex-col shrink-0 relative z-10">
-                        <div class="text-center mb-10">
+                        <div class="text-center mb-8">
                             ${d.photo ? `<div class="w-32 h-32 mx-auto mb-4 rounded-full bg-cover bg-center border-4 border-white/20 shadow-lg" style="background-image:url('${d.photo}')"></div>` : ''}
-                            <h1 class="text-2xl font-bold leading-tight mb-2">${d.personal.name}</h1>
+                            <h1 class="text-2xl font-bold leading-tight mb-2 break-words">${d.personal.name}</h1>
                             <p class="opacity-80 text-sm uppercase tracking-widest">${d.personal.title}</p>
                         </div>
-                        <div class="space-y-4 text-sm mb-10 opacity-90">
+                        <div class="space-y-3 text-sm mb-10 opacity-90">
                             <div class="flex items-center gap-3"><i class="fa-solid fa-envelope w-4"></i> <span class="break-all">${d.personal.email}</span></div>
                             <div class="flex items-center gap-3"><i class="fa-solid fa-phone w-4"></i> ${d.personal.phone}</div>
                             <div class="flex items-center gap-3"><i class="fa-solid fa-location-dot w-4"></i> ${d.personal.location}</div>
                         </div>
                         <div class="mt-auto">
-                            <h3 class="text-xs font-bold uppercase tracking-widest border-b border-white/30 pb-2 mb-3 opacity-70">Competenze</h3>
-                            <div class="flex flex-wrap gap-2">
-                                ${skills.map(s => `<span class="bg-white/10 px-2 py-1 rounded text-xs backdrop-blur-sm">${s.trim()}</span>`).join('')}
+                            <h3 class="text-xs font-bold uppercase tracking-widest border-b border-white/30 pb-2 mb-3 opacity-70">Skills</h3>
+                            <div class="flex flex-wrap gap-1">
+                                ${sk.map(s => `<span class="bg-white/10 px-2 py-1 rounded text-[10px] backdrop-blur-sm">${s.trim()}</span>`).join('')}
                             </div>
                         </div>
                     </div>
                     <div class="w-[65%] p-10 bg-white text-slate-800">
-                        <section class="mb-8">
+                        <div class="cv-block mb-8">
                             <h3 class="text-lg font-bold uppercase tracking-widest border-b-2 pb-2 mb-4 text-[var(--col-prime)]" style="border-color: color-mix(in srgb, var(--col-prime), white 80%)">Profilo</h3>
                             <p class="text-slate-600 text-justify text-sm leading-relaxed">${d.personal.summary}</p>
-                        </section>
-                        <section class="mb-8">
+                        </div>
+                        <div class="cv-block mb-8">
                             <h3 class="text-lg font-bold uppercase tracking-widest border-b-2 pb-2 mb-6 text-[var(--col-prime)]" style="border-color: color-mix(in srgb, var(--col-prime), white 80%)">Esperienza</h3>
                             <div class="space-y-6">
                                 ${d.experience.map(e => `
-                                    <div class="relative pl-4 border-l-2 border-slate-100">
+                                    <div class="cv-block relative pl-4 border-l-2 border-slate-100">
                                         <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-[var(--col-prime)]"></div>
                                         <h4 class="font-bold text-lg text-slate-800">${e.role}</h4>
                                         <div class="flex justify-between items-center mb-2">
@@ -446,38 +534,38 @@
                                     </div>
                                 `).join('')}
                             </div>
-                        </section>
-                        <section>
-                            <h3 class="text-lg font-bold uppercase tracking-widest border-b-2 pb-2 mb-6 text-[var(--col-prime)]" style="border-color: color-mix(in srgb, var(--col-prime), white 80%)">Formazione</h3>
+                        </div>
+                        <div class="cv-block">
+                            <h3 class="text-lg font-bold uppercase tracking-widest border-b-2 pb-2 mb-6 text-[var(--col-prime)]" style="border-color: color-mix(in srgb, var(--col-prime), white 80%)">Istruzione</h3>
                             ${d.education.map(e => `
-                                <div class="mb-4">
+                                <div class="cv-block mb-4">
                                     <div class="font-bold text-slate-800">${e.degree}</div>
                                     <div class="text-sm text-slate-500">${e.school}, ${e.year}</div>
                                 </div>
                             `).join('')}
-                        </section>
+                        </div>
                     </div>
                 </div>`;
             } 
-            // 2. CLASSIC
+            // CLASSIC
             else if(c.template === 'classic') {
                 html = `
                 <div class="p-12 text-slate-800">
-                    <div class="text-center border-b-2 border-slate-800 pb-8 mb-10">
+                    <div class="cv-block text-center border-b-2 border-slate-800 pb-8 mb-10">
                         <h1 class="text-4xl font-bold uppercase tracking-tight mb-2">${d.personal.name}</h1>
                         <p class="text-xl font-medium text-[var(--col-prime)] mb-4">${d.personal.title}</p>
                         <div class="flex justify-center gap-4 text-sm text-slate-500">
                             <span>${d.personal.email}</span><span>•</span><span>${d.personal.phone}</span><span>•</span><span>${d.personal.location}</span>
                         </div>
                     </div>
-                    <section class="mb-10">
+                    <div class="cv-block mb-10">
                         <h3 class="text-sm font-bold uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 text-slate-400">Profilo</h3>
                         <p class="text-slate-600 text-justify leading-relaxed">${d.personal.summary}</p>
-                    </section>
-                    <section class="mb-10">
+                    </div>
+                    <div class="cv-block mb-10">
                         <h3 class="text-sm font-bold uppercase tracking-widest border-b border-slate-200 pb-2 mb-6 text-slate-400">Esperienza</h3>
                         ${d.experience.map(e => `
-                            <div class="grid grid-cols-[1fr_3fr] gap-6 mb-6">
+                            <div class="cv-block grid grid-cols-[1fr_3fr] gap-6 mb-6">
                                 <div class="text-right text-sm font-bold text-[var(--col-prime)] pt-1">${e.start} - ${e.end}</div>
                                 <div>
                                     <h4 class="font-bold text-lg text-slate-800">${e.role}</h4>
@@ -486,113 +574,109 @@
                                 </div>
                             </div>
                         `).join('')}
-                    </section>
+                    </div>
                     <div class="grid grid-cols-2 gap-10">
-                        <section>
+                        <div class="cv-block">
                             <h3 class="text-sm font-bold uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 text-slate-400">Istruzione</h3>
                             ${d.education.map(e => `<div class="mb-3"><div class="font-bold">${e.degree}</div><div class="text-sm text-slate-500">${e.school}, ${e.year}</div></div>`).join('')}
-                        </section>
-                        <section>
+                        </div>
+                        <div class="cv-block">
                             <h3 class="text-sm font-bold uppercase tracking-widest border-b border-slate-200 pb-2 mb-4 text-slate-400">Skills</h3>
-                            <div class="flex flex-wrap gap-2">${skills.map(s => `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs border border-slate-200">${s.trim()}</span>`).join('')}</div>
-                        </section>
+                            <div class="flex flex-wrap gap-2">${sk.map(s => `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded text-xs border border-slate-200">${s.trim()}</span>`).join('')}</div>
+                        </div>
                     </div>
                 </div>`;
             }
-            // 3. MINIMAL
+            // MINIMAL
             else {
                 html = `
                 <div class="p-12 grid grid-cols-[2fr_1fr] gap-12 text-slate-800">
                     <div>
-                        <h1 class="text-5xl font-light mb-2 leading-none">${d.personal.name}</h1>
-                        <p class="text-lg uppercase tracking-widest font-bold text-[var(--col-prime)] mb-10">${d.personal.title}</p>
-                        <div class="pl-6 border-l-4 mb-10" style="border-color: var(--col-prime)">
-                            <p class="text-lg italic text-slate-600 font-serif opacity-90">${d.personal.summary}</p>
+                        <div class="cv-block mb-16">
+                            <h1 class="text-5xl font-light mb-2 leading-none">${d.personal.name}</h1>
+                            <p class="text-lg uppercase tracking-widest font-bold text-[var(--col-prime)] mb-10">${d.personal.title}</p>
+                            <div class="pl-6 border-l-4 mb-10" style="border-color: var(--col-prime)">
+                                <p class="text-lg italic text-slate-600 font-serif opacity-90">${d.personal.summary}</p>
+                            </div>
                         </div>
-                        <section>
+                        <div class="cv-block">
                             <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-6 flex items-center gap-4">Esperienza <span class="h-px bg-slate-200 flex-1"></span></h3>
                             <div class="space-y-8">
                                 ${d.experience.map(e => `
-                                    <div>
+                                    <div class="cv-block">
                                         <h4 class="text-xl font-bold text-slate-800">${e.role}</h4>
                                         <div class="text-sm font-bold text-[var(--col-prime)] mb-2 mt-1">${e.company}</div>
                                         <p class="text-sm text-slate-600 leading-relaxed">${e.desc}</p>
                                     </div>
                                 `).join('')}
                             </div>
-                        </section>
+                        </div>
                     </div>
                     <div class="text-right pt-2">
-                        <div class="mb-10 space-y-2 text-sm">
+                        <div class="cv-block mb-10 space-y-2 text-sm">
                             <h3 class="text-[10px] font-bold uppercase text-slate-400 mb-3 border-b pb-1">Contatti</h3>
                             <div>${d.personal.email}</div><div>${d.personal.phone}</div><div>${d.personal.location}</div>
                         </div>
-                        <div class="mb-10">
+                        <div class="cv-block mb-10">
                             <h3 class="text-[10px] font-bold uppercase text-slate-400 mb-4 border-b pb-2">Istruzione</h3>
                             ${d.education.map(e => `<div class="mb-4"><div class="font-bold">${e.degree}</div><div class="text-xs text-slate-500">${e.school}</div></div>`).join('')}
                         </div>
-                        <div>
+                        <div class="cv-block">
                             <h3 class="text-[10px] font-bold uppercase text-slate-400 mb-4 border-b pb-2">Skills</h3>
-                            <div class="flex flex-wrap justify-end gap-2">${skills.map(s => `<span class="border px-2 py-1 text-xs text-slate-500">${s.trim()}</span>`).join('')}</div>
+                            <div class="flex flex-wrap justify-end gap-2">${sk.map(s => `<span class="border px-2 py-1 text-xs text-slate-500">${s.trim()}</span>`).join('')}</div>
                         </div>
                     </div>
                 </div>`;
             }
 
-            target.innerHTML = html;
+            t.innerHTML = html;
         },
 
-        /* --- UTILS --- */
-        autoScale: function() {
-            const wrap = document.getElementById('preview-container');
-            const page = document.getElementById('cv-paper');
-            if(!wrap || !page) return;
-            const scale = Math.min((wrap.clientWidth - 40) / 794, 1);
-            page.style.transform = `scale(${scale})`;
-            page.style.marginBottom = `-${1123 - (1123 * scale)}px`;
-            if(document.getElementById('zoom-val')) document.getElementById('zoom-val').innerText = `${Math.round(scale*100)}%`;
+        // --- UTILS ---
+        scale() {
+            const w = document.getElementById('preview-container');
+            const p = document.getElementById('cv-paper');
+            if(!w || !p) return;
+            const s = Math.min((w.clientWidth - 40) / 794, 1);
+            p.style.transform = `scale(${s})`;
+            p.style.marginBottom = `-${1123 - (1123 * s)}px`;
+            document.getElementById('zoom-txt').innerText = `${Math.round(s*100)}%`;
         },
 
-        downloadPDF: function() {
-            window.print();
-        },
+        download() { window.print(); },
 
-        setEditorTab: function(tab) {
-            document.getElementById('panel-content').classList.add('hidden');
-            document.getElementById('panel-design').classList.add('hidden');
-            document.getElementById('panel-'+tab).classList.remove('hidden');
-            
-            // Stili bottoni
-            const btnC = document.getElementById('btn-tab-content');
-            const btnD = document.getElementById('btn-tab-design');
-            if(tab === 'content') {
-                btnC.className = 'flex-1 py-2 text-sm font-bold text-blue-600 bg-white shadow-sm rounded border border-gray-200 transition-all';
-                btnD.className = 'flex-1 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-all';
-            } else {
-                btnD.className = 'flex-1 py-2 text-sm font-bold text-blue-600 bg-white shadow-sm rounded border border-gray-200 transition-all';
-                btnC.className = 'flex-1 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition-all';
+        resetData() {
+            if(confirm('Cancellare tutto e ricominciare?')) {
+                localStorage.removeItem('nl_cv_v4');
+                location.reload();
             }
         },
 
-        setMobileView: function(view) {
-            const body = document.getElementById('body-root');
-            const btnEd = document.getElementById('mob-btn-editor');
-            const btnPr = document.getElementById('mob-btn-preview');
+        setTab(t) {
+            document.getElementById('panel-content').style.display = t === 'content' ? 'block' : 'none';
+            document.getElementById('panel-design').style.display = t === 'design' ? 'block' : 'none';
             
-            if(view === 'editor') {
-                body.classList.remove('show-preview'); body.classList.add('show-editor');
-                btnEd.classList.add('active'); btnPr.classList.remove('active');
+            const bc = document.getElementById('tab-btn-content');
+            const bd = document.getElementById('tab-btn-design');
+            if(t==='content') {
+                bc.className = "flex-1 py-2 text-xs font-bold uppercase rounded-md bg-white border border-gray-200 text-blue-600 shadow-sm transition-all";
+                bd.className = "flex-1 py-2 text-xs font-bold uppercase rounded-md text-slate-500 hover:bg-white hover:shadow-sm transition-all";
             } else {
-                body.classList.remove('show-editor'); body.classList.add('show-preview');
-                btnPr.classList.add('active'); btnEd.classList.remove('active');
-                setTimeout(() => this.autoScale(), 100); // Ricalcola zoom quando diventa visibile
+                bd.className = "flex-1 py-2 text-xs font-bold uppercase rounded-md bg-white border border-gray-200 text-blue-600 shadow-sm transition-all";
+                bc.className = "flex-1 py-2 text-xs font-bold uppercase rounded-md text-slate-500 hover:bg-white hover:shadow-sm transition-all";
             }
+        },
+
+        mob(v) {
+            document.body.className = v === 'editor' ? 'view-editor' : 'view-preview';
+            document.getElementById('mb-edit').className = `mob-btn ${v==='editor'?'active':''}`;
+            document.getElementById('mb-prev').className = `mob-btn ${v==='preview'?'active':''}`;
+            if(v==='preview') setTimeout(() => this.scale(), 100);
         }
     };
 
-    // Avvio
     document.addEventListener('DOMContentLoaded', () => app.init());
-    window.addEventListener('resize', () => app.autoScale());
+    window.addEventListener('resize', () => app.scale());
 </script>
 
 </body>
