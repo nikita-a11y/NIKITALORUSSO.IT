@@ -5,19 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CV Creator - Nikita Lorusso Web Design</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Font Awesome & Fonts -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Playfair+Display:wght@400;700&family=Roboto+Mono:wght@400&display=swap" rel="stylesheet">
 
     <style>
-        /* --- RESET & VARIABLES --- */
         :root {
             --primary: #2563eb;
             --secondary: #1e293b;
-            --accent: #f59e0b; /* Un tocco di colore per le CTA */
+            --accent: #f59e0b; 
         }
         
         #cv-widget-root { font-family: 'Inter', sans-serif; color: #334155; line-height: 1.5; background: #f8fafc; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
@@ -105,12 +102,10 @@
             .mob-btn i { font-size: 20px; margin-bottom: 2px; }
             .mob-btn.active { color: var(--primary); }
 
-            /* Gestione visibilità */
             body.show-editor .preview-panel { display: none !important; }
             body.show-preview .editor-panel { display: none !important; }
         }
 
-        /* --- STAMPA PDF PERFETTA --- */
         @media print {
             body > *:not(#print-area) { display: none !important; }
             #cv-widget-root { display: none !important; }
@@ -160,7 +155,7 @@
                 <i class="fa-solid fa-file-contract"></i>
             </div>
             <div>
-                <h1 class="text-sm font-bold text-slate-900 leading-none">CV Creator</h1>
+                <h1 class="text-sm font-bold text-slate-900 leading-none">CV GEN</h1>
                 <a href="https://www.nikitalorusso.it" target="_blank" class="text-[10px] text-blue-600 font-bold hover:underline uppercase tracking-wide">
                     by Nikita Lorusso
                 </a>
