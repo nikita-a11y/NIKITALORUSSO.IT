@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CV Creator - Nikita Lorusso Design</title>
+    <title>CV Creator - Nikita Lorusso Web Design</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,8 +16,14 @@
 
     <style>
         /* --- RESET & BASE --- */
-        :root { --primary: #2563eb; --dark: #0f172a; }
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #334155; height: 100vh; display: flex; flex-direction: column; margin: 0; overflow: hidden; }
+        /* Colori Globali Caldi */
+        :root { 
+            --primary: #1e40af; /* Blue Scuro/Classico */
+            --dark: #f8fafc; /* Grigio Chiarissimo per editor */
+            --editor-bg: #ffffff; /* Sfondo principale editor */
+            --editor-text: #334155; /* Testo Scuro Morbido */
+        }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: var(--editor-text); height: 100vh; display: flex; flex-direction: column; margin: 0; overflow: hidden; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         /* --- LAYOUT --- */
@@ -25,11 +31,23 @@
         
         /* Sidebar Editor */
         .editor-col { 
-            width: 400px; background: white; border-right: 1px solid #e2e8f0; 
+            width: 400px; background: var(--editor-bg); border-right: 1px solid #e2e8f0; 
             display: flex; flex-direction: column; z-index: 20; 
             box-shadow: 4px 0 20px rgba(0,0,0,0.05); 
         }
-        .editor-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; }
+        .editor-content { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: 100px; background: #f9fafb; }
+        
+        /* Input Styles */
+        .editor-col input, .editor-col textarea, .editor-col select {
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            color: var(--editor-text);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .editor-col input:focus, .editor-col textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px rgba(30, 64, 175, 0.5);
+        }
 
         /* Area Anteprima */
         .preview-col { 
@@ -60,7 +78,6 @@
             color: var(--sb-text); 
             min-height: 297mm; 
             height: 100%;
-            /* Fix colore per HTML2PDF */
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -75,7 +92,6 @@
             .editor-col { width: 100%; height: auto; border-right: none; position: relative; }
             .preview-col { width: 100%; height: auto; padding: 10px; background: #e2e8f0; min-height: 500px; }
             
-            /* Rimuovi zoom e adatta il foglio alla larghezza del contenitore */
             #cv-paper { transform: scale(1) !important; width: 95% !important; min-height: auto; margin: 0 auto 20px auto; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
             /* Navigazione Fissa Mobile */
@@ -117,7 +133,7 @@
 <header class="bg-white border-b border-gray-200 px-5 py-3 flex justify-between items-center sticky top-0 z-40 hidden md:flex">
     <div class="flex items-center gap-3">
         <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <i class="fa-solid fa-file-invoice"></i>
         </div>
         <div>
             <h1 class="text-base font-bold text-slate-900 leading-none">CV Creator</h1>
@@ -127,7 +143,7 @@
         </div>
     </div>
     <div class="flex gap-3">
-        <button onclick="app.downloadPDF()" class="bg-slate-900 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-slate-800 transition-all shadow-md flex items-center gap-2">
+        <button onclick="app.downloadPDF()" class="bg-blue-600 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-blue-700 transition-all shadow-md flex items-center gap-2">
             <i class="fa-solid fa-file-arrow-down"></i> Scarica PDF
         </button>
     </div>
@@ -154,14 +170,24 @@
 
         <div class="editor-content">
             
-            <!-- BRAND BANNER -->
-            <a href="https://www.nikitalorusso.it/servizi" target="_blank" class="brand-badge block mt-4" title="Vai al sito">
-                <div class="text-[10px] font-bold text-blue-300 uppercase tracking-wider mb-1">Nikita Lorusso Design</div>
-                <div class="font-bold text-sm">Hai bisogno di un Sito Web?</div>
-                <div class="text-[10px] text-slate-300 mt-1 flex justify-center items-center gap-1">
-                    Scopri i servizi <i class="fa-solid fa-arrow-right"></i>
+            <!-- BRANDING & SOCIAL PANEL (NIKITA LORUSSO) -->
+            <div class="bg-white p-4 rounded-xl shadow-md border border-blue-100 mb-6">
+                <div class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">Consulenza Web & Design</div>
+                <h3 class="text-base font-bold text-slate-800 mb-3">Nikita Lorusso</h3>
+                
+                <p class="text-xs text-slate-600 mb-4">
+                    Offro servizi di sviluppo e strategia web su misura. Se ti serve un CV di alta qualità, sai dove trovare anche un sito di alta qualità!
+                </p>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="https://www.nikitalorusso.it/servizi" target="_blank" class="bg-blue-600 text-white text-xs font-bold py-2 rounded-lg text-center hover:bg-blue-700 transition-colors">
+                        <i class="fa-solid fa-gem mr-1"></i> I Miei Servizi
+                    </a>
+                    <a href="https://www.instagram.com/nikita.lorusso/" target="_blank" class="bg-slate-700 text-white text-xs font-bold py-2 rounded-lg text-center hover:bg-slate-600 transition-colors">
+                        <i class="fa-brands fa-instagram mr-1"></i> Seguimi
+                    </a>
                 </div>
-            </a>
+            </div>
 
             <!-- PANEL: DATI -->
             <div id="panel-content" class="space-y-6">
@@ -203,7 +229,7 @@
 
                     <div class="flex justify-between items-center border-b pb-1 mt-6">
                         <span class="text-xs font-bold text-slate-400 uppercase">Istruzione</span>
-                        <button onclick="app.add('edu')" class="text-blue-600 text-xs font-bold">+ Aggiungi</button>
+                        <button onclick="app.add('edu')" class="text-blue-600 text-xs font-bold">+ Agg. Istruzione</button>
                     </div>
                     <div id="list-edu" class="space-y-2"></div>
                 </div>
@@ -232,15 +258,15 @@
                 <div class="space-y-3">
                     <div class="flex justify-between items-center p-3 border rounded-lg bg-white">
                         <span class="text-xs font-bold text-slate-600">Colore Titoli</span>
-                        <input type="color" oninput="app.cfg('accent', this.value)" value="#2563eb" class="w-8 h-8 rounded cursor-pointer border-none">
+                        <input type="color" oninput="app.cfg('accent', this.value)" value="#2563eb" class="w-8 h-8 rounded cursor-pointer border-none p-0">
                     </div>
                     <div class="flex justify-between items-center p-3 border rounded-lg bg-white">
                         <span class="text-xs font-bold text-slate-600">Sfondo Sidebar</span>
-                        <input type="color" oninput="app.cfg('bg', this.value)" value="#1e293b" class="w-8 h-8 rounded cursor-pointer border-none">
+                        <input type="color" oninput="app.cfg('bg', this.value)" value="#1e293b" class="w-8 h-8 rounded cursor-pointer border-none p-0">
                     </div>
                     <div class="flex justify-between items-center p-3 border rounded-lg bg-white">
                         <span class="text-xs font-bold text-slate-600">Testo Sidebar</span>
-                        <input type="color" oninput="app.cfg('txt', this.value)" value="#ffffff" class="w-8 h-8 rounded cursor-pointer border-none">
+                        <input type="color" oninput="app.cfg('txt', this.value)" value="#ffffff" class="w-8 h-8 rounded cursor-pointer border-none p-0">
                     </div>
                 </div>
 
@@ -282,18 +308,25 @@
 
 <script>
 const app = {
+    // Dati iniziali VUOTI
     data: {
-        name: 'Mario Rossi', title: 'Web Developer', email: 'mario@email.com', phone: '333 1234567', location: 'Roma', summary: 'Sviluppatore esperto nella creazione di siti web moderni e funzionali.',
-        skills: 'HTML, CSS, JavaScript, React, Tailwind, Git',
-        exp: [{id:1, role:'Frontend Developer', company:'Web Agency', start:'2021', end:'Oggi', desc:'Sviluppo interfacce responsive e ottimizzazione performance.'}],
-        edu: [{id:1, degree:'Diploma Informatica', school:'ITIS Rossi', year:'2020'}],
+        name: '', title: '', email: '', phone: '', location: '', summary: '',
+        skills: '',
+        exp: [],
+        edu: [],
         photo: null,
         config: { tpl: 'elegant', accent: '#2563eb', bg: '#1e293b', txt: '#ffffff', font: 'Inter, sans-serif' }
     },
 
     init() {
         const s = localStorage.getItem('nikita_cv_final');
-        if(s) try { this.data = {...this.data, ...JSON.parse(s)}; } catch(e){}
+        if(s) {
+            try { 
+                const loadedData = JSON.parse(s);
+                // Mantieni la config se c'è
+                this.data = {...this.data, ...loadedData, config: {...this.data.config, ...loadedData.config}};
+            } catch(e){}
+        }
         this.bind(); this.renderL(); this.updPh(); this.render();
         // Zoom Auto desktop
         if(window.innerWidth > 900) {
@@ -309,7 +342,11 @@ const app = {
 
     bind() {
         document.querySelectorAll('[data-k]').forEach(el => {
-            el.value = this.data[el.dataset.k] || '';
+            // Pre-compila solo se ci sono dati salvati
+            if (this.data[el.dataset.k]) {
+                 el.value = this.data[el.dataset.k];
+            }
+
             el.oninput = (e) => { this.data[el.dataset.k] = e.target.value; this.save(); };
         });
     },
@@ -325,9 +362,9 @@ const app = {
 
         const opt = {
             margin: 0,
-            filename: `CV_${this.data.name.replace(/\s+/g, '_')}.pdf`,
+            filename: `CV_${this.data.name.replace(/\s+/g, '_') || 'nuovo_cv'}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
+            html2canvas: { scale: 3, useCORS: true, logging: false }, // Scala 3 per alta qualità
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
@@ -413,36 +450,36 @@ const app = {
         let h = '';
         const skills = d.skills.split(',').filter(s=>s.trim());
 
-        // ELEGANT (Sidebar)
+        // 1. ELEGANT (Sidebar - 35% Colonna Fissa)
         if(c.tpl === 'elegant') {
             h = `
             <div class="flex h-full tpl-elegant">
                 <div class="w-[35%] sidebar p-8 flex flex-col shrink-0">
                     <div class="text-center mb-8">
                         ${d.photo ? `<img src="${d.photo}" style="width:120px; height:120px; border-radius:50%; object-fit:cover; margin:0 auto 15px; border:4px solid rgba(255,255,255,0.2);">` : ''}
-                        <h1 style="font-size:22px; font-weight:bold; line-height:1.2; margin-bottom:5px;">${d.name}</h1>
-                        <p style="opacity:0.8; font-size:13px; text-transform:uppercase; letter-spacing:1px;">${d.title}</p>
+                        <h1 style="font-size:22px; font-weight:bold; line-height:1.2; margin-bottom:5px;">${d.name || 'IL TUO NOME'}</h1>
+                        <p style="opacity:0.8; font-size:13px; text-transform:uppercase; letter-spacing:1px;">${d.title || 'IL TUO TITOLO'}</p>
                     </div>
                     <div style="font-size:12px; line-height:2; margin-bottom:30px; opacity:0.9;">
-                        <div><i class="fa-solid fa-envelope mr-2"></i> ${d.email}</div>
-                        <div><i class="fa-solid fa-phone mr-2"></i> ${d.phone}</div>
-                        <div><i class="fa-solid fa-location-dot mr-2"></i> ${d.location}</div>
+                        <div><i class="fa-solid fa-envelope mr-2"></i> ${d.email || 'email@esempio.com'}</div>
+                        <div><i class="fa-solid fa-phone mr-2"></i> ${d.phone || '333 000000'}</div>
+                        <div><i class="fa-solid fa-location-dot mr-2"></i> ${d.location || 'La tua città'}</div>
                     </div>
                     <div style="margin-top:auto">
                         <h3 style="font-size:11px; font-weight:bold; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:5px; margin-bottom:10px; opacity:0.8;">Competenze</h3>
                         <div style="display:flex; flex-wrap:wrap; gap:5px;">
-                            ${skills.map(s => `<span style="background:rgba(255,255,255,0.1); padding:3px 8px; border-radius:4px; font-size:10px;">${s.trim()}</span>`).join('')}
+                            ${skills.length > 0 ? skills.map(s => `<span style="background:rgba(255,255,255,0.1); padding:3px 8px; border-radius:4px; font-size:10px;">${s.trim()}</span>`).join('') : '<span style="font-size:11px; opacity:0.6;">Aggiungi skills...</span>'}
                         </div>
                     </div>
                 </div>
                 <div class="w-[65%] p-10 text-slate-800 bg-white">
                     <section style="margin-bottom:30px;">
                         <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #eee; padding-bottom:5px; margin-bottom:10px;">Profilo</h3>
-                        <p style="font-size:13px; text-align:justify; color:#475569;">${d.summary}</p>
+                        <p style="font-size:13px; text-align:justify; color:#475569;">${d.summary || 'Breve introduzione professionale.'}</p>
                     </section>
                     <section style="margin-bottom:30px;">
                         <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #eee; padding-bottom:5px; margin-bottom:15px;">Esperienza</h3>
-                        ${d.exp.map(e => `
+                        ${d.exp.length > 0 ? d.exp.map(e => `
                             <div style="margin-bottom:15px;">
                                 <div style="font-weight:bold; font-size:14px; color:#1e293b;">${e.role}</div>
                                 <div style="display:flex; justify-content:space-between; font-size:12px; color:${c.accent}; font-weight:600; margin-bottom:3px;">
@@ -450,38 +487,38 @@ const app = {
                                 </div>
                                 <p style="font-size:12px; color:#64748b; line-height:1.4;">${e.desc}</p>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p style="font-size:13px; color:#94a3b8;">Aggiungi la tua esperienza lavorativa.</p>'}
                     </section>
                     <section>
                         <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #eee; padding-bottom:5px; margin-bottom:10px;">Istruzione</h3>
-                        ${d.edu.map(e => `
+                        ${d.edu.length > 0 ? d.edu.map(e => `
                             <div style="margin-bottom:8px;">
                                 <div style="font-weight:bold; font-size:13px;">${e.degree}</div>
                                 <div style="font-size:11px; color:#64748b;">${e.school}, ${e.year}</div>
                             </div>
-                        `).join('')}
+                        `).join('') : '<p style="font-size:13px; color:#94a3b8;">Aggiungi il tuo percorso di studi.</p>'}
                     </section>
                 </div>
             </div>`;
         }
-        // MINIMAL
+        // 2. MINIMAL
         else {
             h = `
             <div class="p-12 tpl-minimal text-slate-800 h-full">
-                <div class="header text-center pb-8 mb-10">
-                    <h1 style="font-size:32px; font-weight:bold; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">${d.name}</h1>
-                    <p style="font-size:16px; color:${c.accent}; font-weight:500;">${d.title}</p>
+                <div class="header text-center pb-8 mb-10" style="border-color:${c.accent};">
+                    <h1 style="font-size:32px; font-weight:bold; text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;">${d.name || 'IL TUO NOME'}</h1>
+                    <p style="font-size:16px; color:${c.accent}; font-weight:500;">${d.title || 'IL TUO TITOLO'}</p>
                     <div style="font-size:12px; color:#64748b; margin-top:10px;">
                         ${d.email} &bull; ${d.phone} &bull; ${d.location}
                     </div>
                 </div>
                 <section style="margin-bottom:30px;">
                     <h3 style="font-size:13px; font-weight:bold; text-transform:uppercase; color:#94a3b8; letter-spacing:1px; border-bottom:1px solid #e2e8f0; padding-bottom:5px; margin-bottom:10px;">Profilo</h3>
-                    <p style="font-size:13px; text-align:justify;">${d.summary}</p>
+                    <p style="font-size:13px; text-align:justify;">${d.summary || 'Breve introduzione professionale.'}</p>
                 </section>
                 <section style="margin-bottom:30px;">
                     <h3 style="font-size:13px; font-weight:bold; text-transform:uppercase; color:#94a3b8; letter-spacing:1px; border-bottom:1px solid #e2e8f0; padding-bottom:5px; margin-bottom:15px;">Esperienza</h3>
-                    ${d.exp.map(e => `
+                    ${d.exp.length > 0 ? d.exp.map(e => `
                         <div style="display:flex; margin-bottom:15px;">
                             <div style="width:100px; font-size:11px; font-weight:bold; color:${c.accent}; pt-1;">${e.start} - ${e.end}</div>
                             <div style="flex:1;">
@@ -490,16 +527,16 @@ const app = {
                                 <p style="font-size:12px;">${e.desc}</p>
                             </div>
                         </div>
-                    `).join('')}
+                    `).join('') : '<p style="font-size:13px; color:#94a3b8;">Nessuna esperienza aggiunta.</p>'}
                 </section>
                 <div style="display:flex; gap:30px;">
                     <section style="flex:1;">
                         <h3 style="font-size:13px; font-weight:bold; text-transform:uppercase; color:#94a3b8; letter-spacing:1px; border-bottom:1px solid #e2e8f0; padding-bottom:5px; margin-bottom:10px;">Istruzione</h3>
-                        ${d.edu.map(e => `<div style="margin-bottom:8px;"><div style="font-weight:bold; font-size:13px;">${e.degree}</div><div style="font-size:11px; color:#64748b;">${e.school}, ${e.year}</div></div>`).join('')}
+                        ${d.edu.length > 0 ? d.edu.map(e => `<div style="margin-bottom:8px;"><div style="font-weight:bold; font-size:13px;">${e.degree}</div><div style="font-size:11px; color:#64748b;">${e.school}, ${e.year}</div></div>`).join('') : '<p style="font-size:13px; color:#94a3b8;">Nessun dato.</p>'}
                     </section>
                     <section style="flex:1;">
                         <h3 style="font-size:13px; font-weight:bold; text-transform:uppercase; color:#94a3b8; letter-spacing:1px; border-bottom:1px solid #e2e8f0; padding-bottom:5px; margin-bottom:10px;">Skills</h3>
-                        <div style="font-size:12px; line-height:1.6;">${d.skills}</div>
+                        <div style="font-size:12px; line-height:1.6;">${d.skills || 'Aggiungi competenze.'}</div>
                     </section>
                 </div>
             </div>`;
@@ -510,7 +547,7 @@ const app = {
 
     // UI Utils
     zoom() {
-        const p = document.getElementById('preview-panel');
+        const p = document.getElementById('preview-col');
         const c = document.getElementById('cv-paper');
         if(p && c) {
             const scale = Math.min((p.clientWidth - 40) / 794, 1);
@@ -532,10 +569,10 @@ const app = {
         document.getElementById('mb-preview').classList.toggle('active', v === 'preview');
         if(v==='preview') setTimeout(()=>this.zoom(), 100);
     },
-    reset() { if(confirm('Cancellare tutto?')) { localStorage.removeItem('nikita_cv_pro'); location.reload(); } }
+    reset() { if(confirm('Cancellare tutti i dati salvati e ricominciare?')) { localStorage.removeItem('nikita_cv_pro'); location.reload(); } }
 };
 
-document.addEventListener('DOMContentLoaded', () => cvApp.init());
+document.addEventListener('DOMContentLoaded', () => app.init());
 </script>
 
 </body>
