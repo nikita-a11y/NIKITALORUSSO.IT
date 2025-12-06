@@ -25,7 +25,7 @@
 
         .app-container { display: flex; height: 100%; width: 100%; }
 
-        /* --- EDITOR SIDEBAR --- */
+        /* --- SIDEBAR --- */
         .editor-sidebar {
             width: 420px;
             background: var(--surface);
@@ -34,29 +34,28 @@
             flex-direction: column;
             z-index: 30;
             box-shadow: 4px 0 20px rgba(0,0,0,0.03);
-            flex-shrink: 0;
         }
 
         .editor-header { padding: 20px; border-bottom: 1px solid var(--border); background: white; }
-
+        
         .editor-scroll-area {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
             scrollbar-width: thin;
             background: #f8fafc;
-            padding-bottom: 100px;
+            padding-bottom: 100px; /* Spazio extra */
         }
 
-        /* --- PREVIEW AREA --- */
+        /* --- ANTEPRIMA --- */
         .preview-area {
             flex: 1;
             background: #e2e8f0;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Allinea in alto */
+            align-items: flex-start;
             padding: 40px;
-            overflow: auto; /* Permette lo scroll se zoomato */
+            overflow: auto;
             position: relative;
             background-image: 
                 linear-gradient(45deg, #cbd5e1 25%, transparent 25%), 
@@ -67,30 +66,42 @@
             background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
         }
 
-        /* --- FOGLIO A4 (DIMENSIONI FISSE & REALI) --- */
+        /* --- FOGLIO A4 --- */
         #cv-paper {
-            width: 210mm;     /* Larghezza FISSA A4 */
-            min-height: 297mm; /* Altezza minima A4 */
+            width: 210mm;
+            min-height: 297mm;
             background: white;
             box-shadow: 0 20px 60px -10px rgba(0,0,0,0.2);
             position: relative;
-            transform-origin: top center; /* Punto di ancoraggio zoom */
+            transform-origin: top center;
             margin-bottom: 50px;
-            flex-shrink: 0; /* Non schiacciare mai */
+            flex-shrink: 0;
         }
 
-        .input-group label {
-            font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;
+        /* FIX BARRA LATERALE */
+        .tpl-elegant .sidebar { 
+            background-color: var(--sb-bg); color: var(--sb-text); 
+            min-height: 297mm; height: 100%;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
         }
+
+        /* --- UI ELEMENTS --- */
+        .input-group label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; display: block; }
         .input-field {
             width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px;
             transition: all 0.2s; background: white; color: #334155;
         }
-        .input-field:focus {
-            border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); outline: none;
+        .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); outline: none; }
+
+        .cta-button {
+            background: linear-gradient(to right, #f59e0b, #d97706);
+            color: white; font-weight: 800; text-transform: uppercase; font-size: 11px;
+            padding: 12px; border-radius: 8px; display: block; text-align: center;
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); transition: transform 0.2s;
         }
-        
-        /* --- MOBILE & RESPONSIVE --- */
+        .cta-button:hover { transform: translateY(-2px); }
+
+        /* --- MOBILE --- */
         .mobile-nav { display: none; }
 
         @media (max-width: 900px) {
@@ -99,12 +110,11 @@
             .editor-sidebar { width: 100%; height: auto; border-right: none; position: relative; z-index: 50; }
             
             .preview-area { 
-                width: 100%; height: auto; padding: 20px 10px; min-height: 600px;
-                overflow: hidden; /* Gestito dallo zoom JS */
-                display: flex; align-items: flex-start; justify-content: center;
+                width: 100%; height: auto; padding: 20px 10px; min-height: 500px;
+                overflow: hidden;
             }
             
-            /* Su mobile NON tocchiamo la larghezza in mm, usiamo solo transform:scale via JS */
+            /* ZOOM OUT VISIVO SU MOBILE (Non deforma il PDF) */
             #cv-paper { margin: 0 auto 30px auto; }
 
             .mobile-nav {
@@ -126,20 +136,12 @@
         }
 
         #loader {
-            position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 9999;
+            position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 9999;
             display: none; justify-content: center; align-items: center; flex-direction: column;
             backdrop-filter: blur(5px);
         }
         .spinner { width: 40px; height: 40px; border: 4px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s infinite linear; }
         @keyframes spin { to {transform: rotate(360deg);} }
-        
-        /* Fix per HTML2PDF e colori */
-        .tpl-elegant .sidebar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-        
-        /* Contenitore nascosto per la generazione PDF pulita */
-        #pdf-generator-container {
-            position: absolute; left: -9999px; top: 0; width: 210mm;
-        }
     </style>
 </head>
 <body class="tab-editor">
@@ -147,59 +149,55 @@
 <div id="loader">
     <div class="spinner"></div>
     <p class="mt-4 font-bold text-slate-700">Creazione PDF in corso...</p>
-    <p class="text-xs text-slate-400">Ottimizzazione layout per la stampa</p>
 </div>
 
 <div class="app-container">
     
-    <!-- EDITOR SIDEBAR -->
+    <!-- EDITOR -->
     <div class="editor-sidebar">
         
         <div class="editor-header flex justify-between items-center sticky top-0 z-20">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-blue-900 text-white rounded flex items-center justify-center font-bold font-serif shadow-md">N</div>
+                <div class="w-8 h-8 bg-blue-900 text-white rounded flex items-center justify-center font-bold font-serif shadow-sm">N</div>
                 <div>
                     <h1 class="text-sm font-bold text-slate-800 uppercase tracking-wide">CV Creator</h1>
                     <span class="text-[10px] text-slate-500 font-medium">by Nikita Lorusso</span>
                 </div>
             </div>
-            <button onclick="app.download()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition shadow-lg flex items-center gap-2">
+            <button onclick="app.download()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition shadow-md flex items-center gap-2">
                 <i class="fa-solid fa-download"></i> PDF
             </button>
         </div>
 
         <div class="editor-scroll-area">
             
-            <!-- BRANDING NIKITA LORUSSO -->
-            <div class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-5 rounded-xl shadow-lg mb-6 relative overflow-hidden">
-                <!-- Decorative circle -->
-                <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-5 rounded-full pointer-events-none"></div>
+            <!-- BRANDING BOX -->
+            <div class="bg-white p-5 rounded-xl shadow-md border border-slate-200 mb-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-16 h-16 bg-blue-50 rounded-bl-full -mr-8 -mt-8"></div>
                 
                 <div class="flex items-center gap-3 mb-3 relative z-10">
-                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-blue-900 font-bold text-xl border-2 border-blue-300 shadow-md">
-                        <i class="fa-solid fa-laptop-code"></i>
-                    </div>
+                    <img src="https://ui-avatars.com/api/?name=Nikita+Lorusso&background=1e3a8a&color=fff" class="w-10 h-10 rounded-full shadow-sm">
                     <div>
-                        <h3 class="font-bold text-white text-lg leading-none">Nikita Lorusso</h3>
-                        <p class="text-[10px] text-blue-200 uppercase tracking-widest mt-1 font-bold">Web Design & Growth</p>
+                        <h3 class="font-bold text-slate-800 leading-none">Nikita Lorusso</h3>
+                        <p class="text-[10px] text-blue-600 uppercase tracking-widest mt-1 font-bold">Web Design & Growth</p>
                     </div>
                 </div>
                 
-                <p class="text-xs text-slate-300 leading-relaxed mb-4 relative z-10 border-l-2 border-blue-500 pl-3">
-                    Realizzo siti web performanti e strategie digitali su misura. Trasforma la tua presenza online oggi stesso.
+                <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                    Trasforma la tua presenza online con un sito web professionale e una strategia su misura.
                 </p>
                 
-                <div class="grid grid-cols-2 gap-2 mb-3 relative z-10">
-                    <a href="https://www.nikitalorusso.com" target="_blank" class="bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-[11px] font-bold text-center transition border border-white/10 backdrop-blur-sm">
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <a href="https://www.nikitalorusso.com" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-lg text-[11px] font-bold text-center transition">
                         <i class="fa-solid fa-globe mr-1"></i> Sito Web
                     </a>
-                    <a href="https://linktr.ee/nikitalorusso" target="_blank" class="bg-white/10 hover:bg-white/20 text-white py-2 rounded-lg text-[11px] font-bold text-center transition border border-white/10 backdrop-blur-sm">
+                    <a href="https://linktr.ee/nikitalorusso" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-lg text-[11px] font-bold text-center transition">
                         <i class="fa-solid fa-link mr-1"></i> Linktree
                     </a>
                 </div>
                 
-                <a href="mailto:nikitalorusso68@gmail.com?subject=Richiesta%20CV%20Professionale" class="block w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-bold py-3 rounded-lg text-center shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5 relative z-10">
-                    <i class="fa-solid fa-star mr-1"></i> Richiedi CV su Misura
+                <a href="mailto:nikitalorusso68@gmail.com?subject=Richiesta%20CV%20Professionale" class="cta-button">
+                    <i class="fa-solid fa-envelope mr-1"></i> Richiedi CV su Misura
                 </a>
             </div>
 
@@ -212,29 +210,32 @@
             <!-- PANEL: CONTENUTO -->
             <div id="p-content" class="space-y-6">
                 
-                <!-- FOTO -->
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                    <div id="ui-photo" class="w-14 h-14 rounded-full bg-slate-100 border flex items-center justify-center text-slate-300 overflow-hidden shrink-0">
-                        <i class="fa-solid fa-camera"></i>
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex gap-2">
-                            <button onclick="document.getElementById('upl').click()" class="flex-1 bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-slate-700">Carica</button>
+                <!-- FOTO UPLOAD (FIXED) -->
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                    <label class="text-[10px] font-bold uppercase text-slate-400 mb-3 block">Foto Profilo</label>
+                    <div class="flex items-center gap-4">
+                        <div id="ui-photo" class="w-16 h-16 rounded-full bg-slate-50 border-2 border-dashed border-slate-300 flex items-center justify-center text-slate-400 overflow-hidden shrink-0">
+                            <i class="fa-solid fa-camera text-xl"></i>
+                        </div>
+                        <div class="flex flex-col gap-2 w-full">
+                            <button onclick="document.getElementById('upl').click()" class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-slate-700 transition w-full">
+                                <i class="fa-solid fa-upload mr-2"></i> Carica Foto
+                            </button>
                             <input type="file" id="upl" hidden accept="image/*" onchange="app.setPhoto(this)">
-                            <button onclick="app.delPhoto()" class="text-red-500 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-50 border border-red-100">X</button>
+                            <button onclick="app.delPhoto()" class="text-red-500 text-xs font-bold hover:underline text-left ml-1">Rimuovi foto</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- CAMPI DATI -->
+                <!-- CAMPI -->
                 <div class="space-y-4">
                     <div class="input-group">
                         <label>Nome e Cognome</label>
-                        <input type="text" data-k="name" placeholder="Es. Nikita Lorusso" class="input-field font-bold text-slate-800">
+                        <input type="text" data-k="name" placeholder="Es. Nikita Lorusso" class="input-field font-bold">
                     </div>
                     <div class="input-group">
                         <label>Titolo Professionale</label>
-                        <input type="text" data-k="title" placeholder="Es. Web Designer & Consulente" class="input-field text-blue-600">
+                        <input type="text" data-k="title" placeholder="Es. Web Designer" class="input-field">
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="input-group">
@@ -247,44 +248,41 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label>Città / Indirizzo</label>
-                        <input type="text" data-k="location" placeholder="Es. Roma, Italia" class="input-field">
+                        <label>Città</label>
+                        <input type="text" data-k="location" placeholder="Es. Roma" class="input-field">
                     </div>
                     <div class="input-group">
                         <label>Profilo (Chi Sei)</label>
-                        <textarea data-k="summary" rows="4" placeholder="Scrivi una breve presentazione professionale che colpisca..." class="input-field resize-none"></textarea>
+                        <textarea data-k="summary" rows="4" placeholder="Scrivi una breve presentazione..." class="input-field resize-none"></textarea>
                     </div>
                 </div>
 
-                <!-- LISTE DINAMICHE -->
                 <div class="space-y-6">
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="mb-0 text-[11px] font-bold text-slate-500 uppercase">Esperienza Lavorativa</label>
-                            <button onclick="app.add('exp')" class="text-blue-600 text-xs font-bold hover:underline flex items-center gap-1"><i class="fa-solid fa-plus"></i> Aggiungi</button>
+                            <label class="mb-0 text-[11px] font-bold text-slate-500 uppercase">Esperienza</label>
+                            <button onclick="app.add('exp')" class="text-blue-600 text-xs font-bold hover:underline">+ Aggiungi</button>
                         </div>
-                        <div id="l-exp" class="space-y-3 empty:text-center empty:py-4 empty:text-xs empty:text-gray-400 empty:italic before:empty:content-['Nessuna_esperienza_aggiunta']"></div>
+                        <div id="l-exp" class="space-y-3"></div>
                     </div>
                     
                     <div>
                         <div class="flex justify-between items-center mb-2">
                             <label class="mb-0 text-[11px] font-bold text-slate-500 uppercase">Istruzione</label>
-                            <button onclick="app.add('edu')" class="text-blue-600 text-xs font-bold hover:underline flex items-center gap-1"><i class="fa-solid fa-plus"></i> Aggiungi</button>
+                            <button onclick="app.add('edu')" class="text-blue-600 text-xs font-bold hover:underline">+ Aggiungi</button>
                         </div>
-                        <div id="l-edu" class="space-y-3 empty:text-center empty:py-4 empty:text-xs empty:text-gray-400 empty:italic before:empty:content-['Nessuna_istruzione_aggiunta']"></div>
+                        <div id="l-edu" class="space-y-3"></div>
                     </div>
                 </div>
 
                 <div class="input-group">
                     <label>Competenze (separate da virgola)</label>
-                    <textarea data-k="skills" rows="3" placeholder="Es: Web Design, SEO, Marketing, Inglese, Photoshop..." class="input-field resize-none"></textarea>
+                    <textarea data-k="skills" rows="3" placeholder="Es: Web Design, SEO, Marketing, Inglese..." class="input-field resize-none"></textarea>
                 </div>
-
             </div>
 
             <!-- PANEL: STILE -->
             <div id="p-design" class="hidden space-y-8">
-                
                 <div>
                     <label class="mb-3 block text-xs font-bold text-slate-500 uppercase">Template</label>
                     <div class="grid grid-cols-2 gap-4">
@@ -294,7 +292,7 @@
                         </button>
                         <button onclick="app.setTpl('minimal')" id="tpl-minimal" class="border-2 border-slate-200 bg-white p-4 rounded-xl text-center hover:border-slate-300 transition-all">
                             <div class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Minimal</div>
-                            <div class="text-[10px] text-slate-400">Pulito e semplice</div>
+                            <div class="text-[10px] text-slate-400">Pulito</div>
                         </button>
                     </div>
                 </div>
@@ -324,35 +322,28 @@
                 </div>
                 
                 <div class="pt-6 text-center">
-                    <button onclick="app.reset()" class="text-red-400 text-xs hover:text-red-600 underline flex items-center justify-center gap-1 mx-auto">
-                        <i class="fa-solid fa-trash-can"></i> Cancella tutto
-                    </button>
+                    <button onclick="app.reset()" class="text-red-400 text-xs hover:text-red-600 underline">Reset Totale</button>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- PREVIEW AREA -->
+    <!-- PREVIEW -->
     <div class="preview-area" id="preview-container">
-        <!-- CV VERO -->
         <div id="cv-paper"></div>
     </div>
 
     <!-- MOBILE NAV -->
     <div class="mobile-nav">
-        <button onclick="app.mob('editor')" class="mob-btn active" id="mb-edit"><i class="fa-solid fa-pen"></i> Editor</button>
+        <button onclick="app.mob('editor')" class="mob-btn active" id="mb-edit"><i class="fa-solid fa-pen-to-square"></i> Editor</button>
         <button onclick="app.mob('preview')" class="mob-btn" id="mb-view"><i class="fa-solid fa-eye"></i> Anteprima</button>
     </div>
 
 </div>
 
-<!-- CONTAINER NASCOSTO PER GENERAZIONE PDF (Clone) -->
-<div id="pdf-generator-container"></div>
-
 <script>
 const app = {
-    // Dati Iniziali Vuoti
     data: {
         name:'', title:'', email:'', phone:'', location:'', summary:'', skills:'',
         exp:[], edu:[], photo:null,
@@ -360,9 +351,8 @@ const app = {
     },
 
     init() {
-        const s = localStorage.getItem('nikita_cv_ultimate_v3');
+        const s = localStorage.getItem('nikita_cv_data_v5');
         if(s) try{ this.data = {...this.data, ...JSON.parse(s)}; }catch(e){}
-        
         this.bind(); this.renderL(); this.updPh(); this.render();
         
         const obs = new ResizeObserver(() => this.zoom());
@@ -371,7 +361,7 @@ const app = {
     },
 
     save() {
-        localStorage.setItem('nikita_cv_ultimate_v3', JSON.stringify(this.data));
+        localStorage.setItem('nikita_cv_data_v5', JSON.stringify(this.data));
         this.render();
     },
 
@@ -382,75 +372,80 @@ const app = {
         });
     },
 
-    // --- DOWNLOAD PDF SICURO (CLONE STRATEGY) ---
+    // DOWNLOAD PDF
     download() {
+        const el = document.getElementById('cv-paper');
         const loader = document.getElementById('loader');
         loader.style.display = 'flex';
 
-        // 1. Clona il CV in un container nascosto ma "reale" per html2pdf
-        const original = document.getElementById('cv-paper');
-        const container = document.getElementById('pdf-generator-container');
-        
-        // Svuota container
-        container.innerHTML = '';
-        
-        // Crea clone
-        const clone = original.cloneNode(true);
-        
-        // Reset trasformazioni sul clone per garantire qualità massima
-        clone.style.transform = 'none';
-        clone.style.margin = '0';
-        clone.style.boxShadow = 'none';
-        clone.style.width = '210mm';
-        clone.style.minHeight = '297mm'; // Altezza A4
-        
-        container.appendChild(clone);
+        // Reset Zoom Temporaneo
+        const oldTrans = el.style.transform;
+        const oldMarg = el.style.marginBottom;
+        el.style.transform = 'none';
+        el.style.marginBottom = '0';
 
-        // 2. Opzioni PDF
         const opt = {
             margin: 0,
-            filename: `CV_${this.data.name.replace(/\s+/g,'_') || 'Mio_CV'}.pdf`,
+            filename: `CV_${this.data.name.replace(/\s+/g,'_') || 'NikitaLorusso_CV'}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: false, scrollX: 0, scrollY: 0 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
-        // 3. Genera dal clone
-        html2pdf().set(opt).from(clone).save().then(() => {
+        html2pdf().set(opt).from(el).save().then(() => {
+            el.style.transform = oldTrans;
+            el.style.marginBottom = oldMarg;
             loader.style.display = 'none';
-            container.innerHTML = ''; // Pulisci
         }).catch(e => {
             alert('Errore download.');
             loader.style.display = 'none';
+            el.style.transform = oldTrans;
+            el.style.marginBottom = oldMarg;
         });
     },
 
-    // Foto
+    // FOTO LOGIC
     setPhoto(el) {
         if(el.files[0]) {
+            // Compressione immagine
             const r = new FileReader();
-            r.onload = (e) => { this.data.photo = e.target.result; this.updPh(); this.save(); };
+            r.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    const MAX_W = 300;
+                    const scale = MAX_W / img.width;
+                    canvas.width = MAX_W;
+                    canvas.height = img.height * scale;
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    this.data.photo = canvas.toDataURL('image/jpeg', 0.8);
+                    this.updPh(); this.save();
+                };
+                img.src = e.target.result;
+            };
             r.readAsDataURL(el.files[0]);
         }
     },
     delPhoto() { this.data.photo = null; this.updPh(); this.save(); },
     updPh() {
         document.getElementById('ui-photo').innerHTML = this.data.photo ? 
-            `<img src="${this.data.photo}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-user text-2xl"></i>`;
+            `<img src="${this.data.photo}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-camera text-2xl"></i>`;
     },
+
+    // LISTE LOGIC
     add(t) {
         this.data[t].unshift({id:Date.now(), role:'', degree:'', company:'', school:'', start:'', end:'', year:'', desc:''});
         this.renderL(); this.save();
     },
     del(t, id) {
-        if(confirm('Rimuovere elemento?')) { this.data[t] = this.data[t].filter(i=>i.id!==id); this.renderL(); this.save(); }
+        if(confirm('Rimuovere?')) { this.data[t] = this.data[t].filter(i=>i.id!==id); this.renderL(); this.save(); }
     },
     updL(t, id, k, v) { this.data[t].find(i=>i.id===id)[k] = v; this.save(); },
     renderL() {
         ['exp', 'edu'].forEach(t => {
             const isE = t==='exp';
-            const listEl = document.getElementById(`l-${t}`);
-            listEl.innerHTML = this.data[t].map(i => `
+            document.getElementById(`l-${t}`).innerHTML = this.data[t].map(i => `
                 <div class="bg-slate-50 border p-3 rounded-lg mb-2 relative shadow-sm group">
                     <button onclick="app.del('${t}', ${i.id})" class="absolute top-2 right-2 text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
                     <input class="w-full font-bold text-sm mb-1 bg-transparent outline-none" value="${i[isE?'role':'degree']}" oninput="app.updL('${t}', ${i.id}, '${isE?'role':'degree'}', this.value)" placeholder="Titolo / Ruolo">
@@ -468,6 +463,7 @@ const app = {
         });
     },
 
+    // UI
     cfg(k, v) { this.data.config[k] = v; this.save(); },
     setTpl(t) {
         this.data.config.tpl = t;
@@ -495,20 +491,18 @@ const app = {
         p.style.transform = `scale(${scale})`;
         p.style.marginBottom = `-${1123 - (1123 * scale)}px`;
     },
-    reset() { if(confirm('Cancellare tutto?')) { localStorage.removeItem('nikita_cv_ultimate_v3'); location.reload(); } },
+    reset() { if(confirm('Cancellare tutto?')) { localStorage.removeItem('nikita_cv_data_v5'); location.reload(); } },
 
+    // RENDERER
     render() {
         const d = this.data; const c = d.config;
         const t = document.getElementById('cv-paper');
         const sk = d.skills.split(',').filter(s=>s.trim());
         
-        const styleVars = `
-            --accent: ${c.accent};
-            --sb-bg: ${c.bg};
-            --sb-text: ${c.txt};
-            font-family: ${c.font};
-        `;
-        t.style = styleVars;
+        t.style.setProperty('--accent', c.accent);
+        t.style.setProperty('--sb-bg', c.bg);
+        t.style.setProperty('--sb-text', c.txt);
+        t.style.fontFamily = c.font;
 
         let h = '';
         if(c.tpl === 'elegant') {
@@ -534,11 +528,11 @@ const app = {
                 </div>
                 <div class="w-[65%] p-12 text-slate-800 bg-white">
                     <section style="margin-bottom:35px;">
-                        <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #eee; padding-bottom:5px; margin-bottom:10px;">Profilo</h3>
+                        <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #f1f5f9; padding-bottom:8px; margin-bottom:15px; letter-spacing:1px;">Profilo</h3>
                         <p style="font-size:13px; text-align:justify; color:#475569;">${d.summary || 'Breve descrizione professionale.'}</p>
                     </section>
                     <section style="margin-bottom:35px;">
-                        <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #eee; padding-bottom:5px; margin-bottom:15px;">Esperienza</h3>
+                        <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #f1f5f9; padding-bottom:8px; margin-bottom:15px; letter-spacing:1px;">Esperienza</h3>
                         ${d.exp.length ? d.exp.map(e => `
                             <div style="margin-bottom:20px;">
                                 <div style="font-weight:bold; font-size:15px; color:#1e293b;">${e.role||'Ruolo'}</div>
@@ -550,7 +544,7 @@ const app = {
                         `).join('') : '<p style="font-size:13px; color:#94a3b8; font-style:italic;">Aggiungi esperienza...</p>'}
                     </section>
                     <section>
-                        <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #eee; padding-bottom:5px; margin-bottom:10px;">Istruzione</h3>
+                        <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; color:${c.accent}; border-bottom:2px solid #f1f5f9; padding-bottom:8px; margin-bottom:10px;">Istruzione</h3>
                         ${d.edu.length ? d.edu.map(e => `
                             <div style="margin-bottom:12px;">
                                 <div style="font-weight:bold; font-size:13px;">${e.degree||'Titolo Studio'}</div>
@@ -597,3 +591,4 @@ document.addEventListener('DOMContentLoaded', () => app.init());
 
 </body>
 </html>
+
