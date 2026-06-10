@@ -4,161 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nikita Lorusso | Designer & Developer</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            background-color: #050505;
-            color: #FFFFFF;
-            font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+        body { background-color: #050505; color: #FFFFFF; font-family: 'Inter', sans-serif; }
         h1, h2, h3 { font-family: 'Syne', sans-serif; }
         
-        /* Questo blocca il problema del bianco su bianco dell'autocompletamento browser */
+        /* FIX DEFINITIVO PER IL TESTO BIANCO IN INPUT */
+        input, select, textarea {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-bottom: 1px solid #404040 !important;
+            transition: border-color 0.3s ease;
+        }
+
+        /* Forza il colore del testo e lo sfondo anche durante l'autocompletamento */
         input:-webkit-autofill,
-        input:-webkit-autofill:hover,
+        input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus,
-        textarea:-webkit-autofill,
-        textarea:-webkit-autofill:hover,
-        textarea:-webkit-autofill:focus,
         select:-webkit-autofill,
         select:-webkit-autofill:hover,
         select:-webkit-autofill:focus {
-            -webkit-text-fill-color: #000000 !important;
-            -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0px 1000px #050505 inset !important;
             transition: background-color 5000s ease-in-out 0s;
         }
 
-        /* Styling for inputs */
-        .form-input {
-            background: transparent !important;
-            border-bottom: 2px solid #333 !important;
-            color: #000 !important;
-            padding: 1rem 0;
-            transition: border-color 0.3s ease;
-        }
-        .form-input:focus {
-            border-bottom: 2px solid #000 !important;
+        input:focus, select:focus {
+            border-bottom: 1px solid #ffffff !important;
             outline: none;
         }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #050505; }
-        ::-webkit-scrollbar-thumb { background: #333; }
+        /* Noise texture for "Designer" look */
+        .grain {
+            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+            opacity: 0.15;
+        }
     </style>
 </head>
-<body class="selection:bg-white selection:text-black">
+<body>
+    <div class="grain fixed inset-0 pointer-events-none"></div>
 
-    <nav class="fixed w-full z-50 py-8 px-6 bg-[#050505]/90 backdrop-blur-sm">
+    <nav class="fixed w-full z-50 py-8 px-6 bg-[#050505]/80 backdrop-blur-md">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <a href="#" class="text-xl font-bold tracking-tight">NIKITA LORUSSO</a>
+            <span class="text-xl font-bold tracking-tight">NIKITA LORUSSO</span>
             <div class="space-x-8 text-[10px] uppercase tracking-[0.2em]">
-                <a href="#servizi" class="hover:text-gray-400 transition-colors">Servizi</a>
+                <a href="#servizi" class="hover:text-gray-400">Servizi</a>
                 <a href="#contatti" class="border border-white/20 px-6 py-2 hover:bg-white hover:text-black transition-all">Collabora</a>
             </div>
         </div>
     </nav>
 
-    <section class="pt-40 pb-20 px-6">
+    <section class="pt-40 pb-20 px-6 min-h-[80vh] flex items-center">
         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-                <h1 class="text-6xl md:text-8xl font-bold leading-[0.9] mb-10">
-                    VISUAL STRATEGY & CODE.
-                </h1>
-                <p class="text-lg text-gray-400 mb-10 leading-relaxed max-w-md">
-                    Progetto ecosistemi digitali orientati alla conversione. Trasformo la visione del tuo brand in asset tecnologici che generano valore misurabile.
-                </p>
-                <div class="flex items-center gap-4 text-[10px] uppercase tracking-[0.2em] text-gray-500">
-                    <span class="h-1.5 w-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                    <span>Disponibile per nuovi progetti</span>
-                </div>
+                <h1 class="text-6xl md:text-8xl font-bold leading-[0.9] mb-10">VISUAL STRATEGY & CODE.</h1>
+                <p class="text-xl text-zinc-400 mb-10 leading-relaxed max-w-md">Progetto ecosistemi digitali orientati alla conversione. Trasformo la visione del tuo brand in asset tecnologici di alto impatto.</p>
             </div>
-            <div class="relative p-1">
-                <div class="absolute inset-0 bg-gradient-to-tr from-zinc-800 to-transparent opacity-20"></div>
-                <img src="foto.jpeg" alt="Nikita Lorusso" class="w-full grayscale hover:grayscale-0 transition-all duration-700 ease-in-out" onerror="this.src='https://placehold.co/800x1000/050505/ffffff?text=Nikita+Lorusso'">
+            <div class="relative">
+                <img src="foto.jpeg" alt="Nikita Lorusso" class="w-full grayscale hover:grayscale-0 transition-all duration-700" onerror="this.src='https://placehold.co/800x1000/050505/ffffff?text=Nikita+Lorusso'">
             </div>
         </div>
     </section>
 
     <section id="servizi" class="py-24 border-t border-zinc-900">
         <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-[10px] uppercase tracking-[0.3em] mb-16 text-gray-500">Servizi Digitali</h2>
+            <h2 class="text-[10px] uppercase tracking-[0.3em] mb-16 text-zinc-500">Servizi Digitali</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-zinc-900">
-                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-colors">
-                    <h3 class="text-xl mb-4">Siti Web Professionali</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Architetture web studiate per performance ed esperienza utente.</p>
+                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
+                    <h3 class="text-xl mb-4 font-bold">Siti Web Professionali</h3>
+                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Architetture studiate per performance e conversione.</p>
                 </div>
-                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-colors">
-                    <h3 class="text-xl mb-4">Landing Page</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Strategie mirate alla conversione del visitatore in cliente.</p>
+                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
+                    <h3 class="text-xl mb-4 font-bold">Landing Page</h3>
+                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Strategie mirate all'acquisizione clienti.</p>
                 </div>
-                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-colors">
-                    <h3 class="text-xl mb-4">Identity & Branding</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Creazione di identità visiva coerente, solida e riconoscibile.</p>
-                </div>
-                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-colors">
-                    <h3 class="text-xl mb-4">Social Media Design</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Grafiche coordinate per ogni touchpoint digitale.</p>
-                </div>
-                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-colors">
-                    <h3 class="text-xl mb-4">Materiale Grafico</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">Presentazioni, biglietti da visita e materiale cartaceo curato.</p>
-                </div>
-                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-colors">
-                    <h3 class="text-xl mb-4">Portfolio Digitali</h3>
-                    <p class="text-gray-400 text-sm leading-relaxed">CV interattivi e portfolio per professionisti ambiziosi.</p>
+                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
+                    <h3 class="text-xl mb-4 font-bold">Identity & Branding</h3>
+                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Creazione di identità visiva solida e distintiva.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="contatti" class="py-24 bg-white text-black">
+    <section id="contatti" class="py-24 border-t border-zinc-900">
         <div class="max-w-3xl mx-auto px-6">
-            <h2 class="text-5xl font-bold mb-16 tracking-tighter">Collaboriamo</h2>
+            <h2 class="text-4xl font-bold mb-16 tracking-tighter">Collaboriamo</h2>
             <form onsubmit="handleFormSubmit(event)" class="space-y-12">
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 font-bold">Nome e Cognome</label>
-                    <input type="text" required class="w-full text-2xl form-input">
+                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 text-zinc-500">Nome e Cognome</label>
+                    <input type="text" required class="w-full text-2xl py-4 bg-transparent border-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 font-bold">Email</label>
-                    <input type="email" required class="w-full text-2xl form-input">
+                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 text-zinc-500">Email</label>
+                    <input type="email" required class="w-full text-2xl py-4 bg-transparent border-none">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 font-bold">Servizio Richiesto</label>
-                    <select class="w-full text-2xl form-input cursor-pointer bg-transparent">
-                        <option>Sito Web</option>
-                        <option>Landing Page</option>
-                        <option>Branding/Identità</option>
-                        <option>Grafica Social</option>
-                        <option>Altro</option>
+                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 text-zinc-500">Servizio</label>
+                    <select class="w-full text-2xl py-4 bg-transparent border-none cursor-pointer">
+                        <option class="text-black">Sito Web</option>
+                        <option class="text-black">Landing Page</option>
+                        <option class="text-black">Branding</option>
                     </select>
                 </div>
-                <button type="submit" class="bg-black text-white px-12 py-5 uppercase text-[10px] tracking-[0.2em] hover:bg-zinc-800 transition-all">
+                <button type="submit" class="border border-white px-12 py-5 uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all">
                     Invia richiesta
                 </button>
             </form>
-            <div id="form-msg" class="hidden mt-12 p-8 bg-zinc-100 font-bold text-center">
+            <div id="form-msg" class="hidden mt-12 p-8 border border-white text-center font-bold">
                 Richiesta inviata. Ti risponderò a breve.
             </div>
         </div>
     </section>
-
-    <footer class="py-20 text-center bg-[#050505] border-t border-zinc-900">
-        <p class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mb-8">© Nikita Lorusso – Tutti i diritti riservati</p>
-        <div class="space-y-2 text-sm text-gray-400">
-            <p>nikitalorusso.it</p>
-            <p class="text-[10px] max-w-sm mx-auto opacity-40">
-                Questo progetto è di proprietà di Nikita Lorusso. È vietata la copia, la distribuzione o l’utilizzo non autorizzato.
-            </p>
-        </div>
-    </footer>
 
     <script>
         function handleFormSubmit(e) {
