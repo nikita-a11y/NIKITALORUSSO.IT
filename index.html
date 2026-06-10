@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
+    <!-- SEO SEO & Schema Markup -->
     <title>Nikita Lorusso | Web Design & Digital Strategy | Collaborazione Remota Italia</title>
     <meta name="description" content="Nikita Lorusso: Web designer freelance specializzato in realizzazione siti web professionali, landing page a conversione e identità visiva. Collaboro con aziende e professionisti in tutta Italia.">
     <meta name="keywords" content="realizzazione siti web professionali remoto, landing page conversione per professionisti, consulenza grafica digital strategy italia, creazione logo aziendale moderno, web designer freelance aziende, strategia branding professionale, portfolio digitale, sviluppo web remoto">
     
+    <!-- Open Graph per Social -->
     <meta property="og:title" content="Nikita Lorusso | Web Design & Digital Strategy">
     <meta property="og:description" content="Design rigoroso, sviluppo orientato alla conversione, risultati misurabili. Collaborazione remota in tutta Italia.">
     <meta property="og:type" content="website">
@@ -21,7 +23,7 @@
       "description": "Web design, landing page e digital strategy per professionisti e aziende.",
       "areaServed": "Italy",
       "url": "https://www.nikitalorusso.it",
-      "telephone": "+393452664536"
+      "telephone": "+393347716561"
     }
     </script>
     
@@ -37,6 +39,7 @@
         }
         h1, h2, h3 { font-family: 'Syne', sans-serif; letter-spacing: -0.02em; }
         
+        /* FIX DEFINITIVO: Form e Autofill (Antidoto al bianco) */
         input:-webkit-autofill,
         input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus,
@@ -101,16 +104,26 @@
             <div>
                 <h1 class="text-5xl md:text-8xl font-bold leading-[0.9] mb-10 uppercase">Progetto asset digitali che generano valore.</h1>
                 <p class="text-lg text-zinc-400 mb-10 leading-relaxed max-w-lg">Supporto professionisti e aziende in tutta Italia a definire il proprio posizionamento. Design rigoroso, sviluppo orientato alla conversione, risultati misurabili.</p>
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <a href="#contatti" class="inline-block border border-white px-10 py-4 text-center uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all">Richiedi consulenza gratuita</a>
-                    <a href="tel:+393452664536" class="inline-block border border-zinc-800 px-10 py-4 text-center uppercase text-[10px] tracking-[0.2em] hover:border-zinc-400 transition-all text-zinc-400">
-                        <span class="block">Chiamami ora</span>
-                        <span class="block mt-1 font-mono">+39 345 266 4536</span>
+                <div class="flex flex-col sm:flex-row flex-wrap gap-4">
+                    <a href="#contatti" class="inline-block border border-white px-8 py-4 text-center uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all">Consulenza gratuita</a>
+                    
+                    <a href="tel:+393452664536" class="inline-flex items-center justify-center gap-3 border border-zinc-800 px-8 py-4 text-center uppercase text-[10px] tracking-[0.2em] hover:border-zinc-400 transition-all text-zinc-400">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                            <path d="M21.384 17.791l-3.75-3.75a1.254 1.254 0 0 0-1.768 0l-1.396 1.396c-2.909-1.464-5.275-3.83-6.739-6.739l1.396-1.396a1.254 1.254 0 0 0 0-1.768l-3.75-3.75a1.25 1.25 0 0 0-1.768 0L2.146 3.146A3.75 3.75 0 0 0 1 5.8a14.2 14.2 0 0 0 6.182 11.018A14.2 14.2 0 0 0 18.2 23a3.75 3.75 0 0 0 2.654-1.146l1.53-1.53a1.25 1.25 0 0 0 0-1.768z"/>
+                        </svg>
+                        <span>Chiama Ora</span>
+                    </a>
+
+                    <a href="https://wa.me/393452664536" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 border border-zinc-800 px-8 py-4 text-center uppercase text-[10px] tracking-[0.2em] hover:border-[#25D366] hover:text-[#25D366] transition-all text-zinc-400">
+                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm5.835-2.295l.411.244c1.714.101 3.447.505 5.753.505 5.405 0 9.803-4.341 9.806-9.682.001-2.587-1.002-5.02-2.825-6.845C17.164 4.093 14.73 3.09 12.008 3.09c-5.402 0-9.803 4.341-9.807 9.683-.001 2.055.539 4.062 1.562 5.867l.256.447-.98 3.578 3.653-.943z"/>
+                        </svg>
+                        <span>WhatsApp</span>
                     </a>
                 </div>
             </div>
             <div class="relative aspect-[3/4] overflow-hidden bg-zinc-900">
-                <img src="foto.jpeg" alt="Nikita Lorusso - Web Designer" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" onerror="this.src='https://placehold.co/800x1000/050505/ffffff?text=Nikita+Lorusso'">
+                <img src="Nikita_Lorusso_Design.jpeg" alt="Nikita Lorusso - Web Designer" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" onerror="this.src='https://placehold.co/800x1000/050505/ffffff?text=Nikita+Lorusso'">
             </div>
         </div>
     </header>
@@ -162,9 +175,25 @@
             <h2 class="text-4xl font-bold mb-8">Pronto a dare una svolta digitale al tuo business?</h2>
             <p class="text-zinc-400 mb-8 leading-relaxed">Lavoro con professionisti e aziende in tutta Italia. Se hai un progetto, un'idea o vuoi capire come migliorare la tua presenza online, richiedi una prima consulenza gratuita. Analizzeremo insieme la tua situazione e vedremo come posso aiutarti a crescere.</p>
             
-            <div class="mb-16 pb-8 border-b border-zinc-900">
-                <p class="text-zinc-500 text-sm uppercase tracking-widest mb-2">Preferisci parlare direttamente?</p>
-                <a href="tel:+393452664536" class="text-2xl font-mono hover:text-zinc-300 transition-colors">+39 345 266 4536</a>
+            <div class="mb-16 pb-8 border-b border-zinc-900 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-[0.2em] mb-3">Parla Direttamente</p>
+                    <a href="tel:+393347716561" class="inline-flex items-center gap-3 text-xl md:text-2xl font-mono hover:text-zinc-300 transition-colors">
+                        <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.387a12.035 12.035 0 01-7.108-7.108c-.115-.44.05-.927.417-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                        <span>+39 345 266 4536</span>
+                    </a>
+                </div>
+                <div>
+                    <p class="text-zinc-500 text-xs uppercase tracking-[0.2em] mb-3">Scrivimi un Messaggio</p>
+                    <a href="https://wa.me/393347716561" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 text-xl md:text-2xl font-mono hover:text-[#25D366] transition-colors">
+                        <svg class="w-5 h-5 text-zinc-400 fill-current hover:text-[#25D366]" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm5.835-2.295l.411.244c1.714.101 3.447.505 5.753.505 5.405 0 9.803-4.341 9.806-9.682.001-2.587-1.002-5.02-2.825-6.845C17.164 4.093 14.73 3.09 12.008 3.09c-5.402 0-9.803 4.341-9.807 9.683-.001 2.055.539 4.062 1.562 5.867l.256.447-.98 3.578 3.653-.943z"/>
+                        </svg>
+                        <span>WhatsApp Chat</span>
+                    </a>
+                </div>
             </div>
 
             <form id="contactForm" class="space-y-8" onsubmit="sendEmail(event)">
@@ -189,16 +218,64 @@
         <p>&copy; 2026 Nikita Lorusso – Tutti i diritti riservati. Collaborazione remota in tutta Italia.</p>
     </footer>
 
+    <!-- Elegant Minimalist Floating Action Dock -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
+        <!-- Floating WhatsApp -->
+        <a href="https://wa.me/393347716561" target="_blank" rel="noopener noreferrer" class="bg-[#050505]/95 backdrop-blur-md border border-zinc-800 p-4 rounded-full text-zinc-400 hover:text-[#25D366] hover:border-[#25D366]/40 shadow-2xl transition-all duration-300 flex items-center justify-center group" aria-label="Scrivi su WhatsApp">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm5.835-2.295l.411.244c1.714.101 3.447.505 5.753.505 5.405 0 9.803-4.341 9.806-9.682.001-2.587-1.002-5.02-2.825-6.845C17.164 4.093 14.73 3.09 12.008 3.09c-5.402 0-9.803 4.341-9.807 9.683-.001 2.055.539 4.062 1.562 5.867l.256.447-.98 3.578 3.653-.943z"/>
+            </svg>
+            <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out text-[9px] uppercase tracking-[0.2em] font-medium ml-0 group-hover:ml-3 whitespace-nowrap">WhatsApp</span>
+        </a>
+        <!-- Floating Phone -->
+        <a href="tel:+393347716561" class="bg-[#050505]/95 backdrop-blur-md border border-zinc-800 p-4 rounded-full text-zinc-400 hover:text-white hover:border-zinc-500 shadow-2xl transition-all duration-300 flex items-center justify-center group" aria-label="Chiama direttamente">
+            <svg class="w-5 h-5 fill-none stroke-currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.387a12.035 12.035 0 01-7.108-7.108c-.115-.44.05-.927.417-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
+            </svg>
+            <span class="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 ease-in-out text-[9px] uppercase tracking-[0.2em] font-medium ml-0 group-hover:ml-3 whitespace-nowrap">Chiama</span>
+        </a>
+    </div>
+
     <script>
-        function sendEmail(event) {
-            event.preventDefault(); 
+        // Custom elegant notification system (instead of the legacy alert)
+        function showNotification(message, type = "error") {
+            const container = document.createElement('div');
+            container.className = "fixed top-8 left-1/2 -translate-x-1/2 bg-[#0d0d0d] border text-xs text-white px-8 py-4 rounded-none tracking-[0.2em] uppercase z-50 transition-all duration-500 transform translate-y-[-20px] opacity-0 flex items-center gap-3 shadow-2xl";
             
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
+            if (type === "error") {
+                container.classList.add('border-red-500/40');
+            } else {
+                container.classList.add('border-white/20');
+            }
+
+            container.innerHTML = `
+                <span class="w-1.5 h-1.5 rounded-full ${type === 'error' ? 'bg-red-500' : 'bg-white'}"></span>
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(container);
+
+            // Trigger animation
+            setTimeout(() => {
+                container.classList.remove('translate-y-[-20px]', 'opacity-0');
+            }, 10);
+
+            // Self-dismissal
+            setTimeout(() => {
+                container.classList.add('translate-y-[-20px]', 'opacity-0');
+                setTimeout(() => container.remove(), 500);
+            }, 4000);
+        }
+
+        function sendEmail(event) {
+            event.preventDefault(); // Impedisce il ricaricamento della pagina
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
 
             if(!name || !email || !message) {
-                alert('Per favore, compila tutti i campi.');
+                showNotification('Per favore, compila tutti i campi richiesti.', 'error');
                 return;
             }
 
