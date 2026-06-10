@@ -4,36 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- SEO Meta Tags Ottimizzati -->
-    <title>Nikita Lorusso | Web Design Remoto & Strategia Digitale in Italia</title>
-    <meta name="description" content="Web designer freelance specializzato in realizzazione siti web professionali, landing page conversion-oriented e identità visiva. Supporto aziende e professionisti in tutta Italia con un metodo di lavoro remoto rigoroso e orientato ai risultati.">
-    <meta name="keywords" content="realizzazione siti web professionali remoto, landing page conversione per professionisti, restyling identità visiva brand, consulenza grafica digital strategy italia, creazione portfolio digitale personalizzato, web designer freelance aziende, creazione logo aziendale moderno, digitalizzazione cv, strategia branding professionale">
+    <title>Nikita Lorusso | Web Design & Digital Strategy | Collaborazione Remota Italia</title>
+    <meta name="description" content="Nikita Lorusso: Web designer freelance specializzato in realizzazione siti web professionali, landing page a conversione e identità visiva. Collaboro con aziende e professionisti in tutta Italia.">
+    <meta name="keywords" content="realizzazione siti web professionali remoto, landing page conversione per professionisti, consulenza grafica digital strategy italia, creazione logo aziendale moderno, web designer freelance aziende, strategia branding professionale, portfolio digitale, sviluppo web remoto">
+    
+    <meta property="og:title" content="Nikita Lorusso | Web Design & Digital Strategy">
+    <meta property="og:description" content="Design rigoroso, sviluppo orientato alla conversione, risultati misurabili. Collaborazione remota in tutta Italia.">
+    <meta property="og:type" content="website">
+
+    <!-- Schema.org JSON-LD per Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Nikita Lorusso Digital Design",
+      "description": "Web design, landing page e digital strategy per professionisti e aziende.",
+      "areaServed": "Italy",
+      "url": "https://www.nikitalorusso.it",
+      "telephone": "+393452664536"
+    }
+    </script>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body { background-color: #050505; color: #FFFFFF; font-family: 'Inter', sans-serif; }
-        h1, h2, h3 { font-family: 'Syne', sans-serif; }
+        body { 
+            background-color: #050505; 
+            color: #FFFFFF; 
+            font-family: 'Inter', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+        }
+        h1, h2, h3 { font-family: 'Syne', sans-serif; letter-spacing: -0.02em; }
         
-        /* FIX DEFINITIVO: Form e Autofill */
-        input, select, textarea {
-            background-color: transparent !important;
-            color: #ffffff !important;
-            border-bottom: 1px solid #4a4a4a !important;
-            transition: all 0.3s ease;
-            width: 100%;
-            padding: 1rem 0;
-            outline: none !important;
-            border-radius: 0 !important;
-            -webkit-appearance: none;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            border-bottom: 1px solid #ffffff !important;
-        }
-
-        /* Forza colore testo durante autocompletamento */
         input:-webkit-autofill,
         input:-webkit-autofill:hover, 
         input:-webkit-autofill:focus,
@@ -44,14 +47,47 @@
             -webkit-box-shadow: 0 0 0px 1000px #050505 inset !important;
             transition: background-color 5000s ease-in-out 0s;
         }
+
+        input, textarea {
+            background-color: transparent !important;
+            color: #ffffff !important;
+            border-bottom: 1px solid #333 !important;
+            width: 100%;
+            padding: 1rem 0;
+            outline: none !important;
+            border-radius: 0 !important;
+            transition: border-color 0.3s ease;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus {
+            border-bottom: 1px solid #ffffff !important;
+        }
+        
+        ::placeholder { color: #555 !important; }
+        
+        /* Aggiunta di una texture sottile per un tocco editoriale */
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            pointer-events: none;
+            background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+            z-index: 100;
+        }
     </style>
 </head>
-<body>
-    <!-- Navigazione -->
-    <nav class="fixed w-full z-50 py-8 px-6 bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
+<body class="selection:bg-white selection:text-black">
+    <div class="grain-overlay"></div>
+
+    <!-- Nav -->
+    <nav class="fixed w-full z-50 py-8 px-6 bg-[#050505]/90 backdrop-blur-md border-b border-white/5">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <span class="text-xl font-bold tracking-tight uppercase">Nikita Lorusso</span>
-            <div class="space-x-8 text-[10px] uppercase tracking-[0.2em]">
+            <span class="text-sm font-bold tracking-[0.2em] uppercase">Nikita Lorusso</span>
+            <div class="space-x-8 text-[10px] uppercase tracking-[0.2em] font-medium">
                 <a href="#servizi" class="hover:text-zinc-400 transition-colors hidden md:inline-block">Servizi</a>
                 <a href="#metodo" class="hover:text-zinc-400 transition-colors hidden md:inline-block">Metodo</a>
                 <a href="#contatti" class="border border-white/20 px-6 py-2 hover:bg-white hover:text-black transition-all">Collabora</a>
@@ -59,94 +95,104 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="pt-40 pb-20 px-6 min-h-[80vh] flex items-center relative z-10">
+    <!-- Hero -->
+    <header class="pt-40 pb-20 px-6 min-h-[80vh] flex items-center">
         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
-                <h1 class="text-5xl md:text-8xl font-bold leading-[0.9] mb-10">TRASFORMO LA TUA VISIONE IN ASSET DIGITALI.</h1>
-                <p class="text-base md:text-lg text-zinc-400 mb-10 leading-relaxed max-w-md">Design e sviluppo orientati alla conversione. Supporto professionisti e aziende in tutta Italia a definire il proprio spazio digitale con un approccio basato su disciplina, qualità e risultati misurabili.</p>
-                <a href="#contatti" class="inline-block border border-white px-10 py-4 uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all">Richiedi consulenza gratuita</a>
+                <h1 class="text-5xl md:text-8xl font-bold leading-[0.9] mb-10 uppercase">Progetto asset digitali che generano valore.</h1>
+                <p class="text-lg text-zinc-400 mb-10 leading-relaxed max-w-lg">Supporto professionisti e aziende in tutta Italia a definire il proprio posizionamento. Design rigoroso, sviluppo orientato alla conversione, risultati misurabili.</p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#contatti" class="inline-block border border-white px-10 py-4 text-center uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all">Richiedi consulenza gratuita</a>
+                    <a href="tel:+393452664536" class="inline-block border border-zinc-800 px-10 py-4 text-center uppercase text-[10px] tracking-[0.2em] hover:border-zinc-400 transition-all text-zinc-400">
+                        <span class="block">Chiamami ora</span>
+                        <span class="block mt-1 font-mono">+39 345 266 4536</span>
+                    </a>
+                </div>
             </div>
-            <div class="relative aspect-[3/4] overflow-hidden">
+            <div class="relative aspect-[3/4] overflow-hidden bg-zinc-900">
                 <img src="foto.jpeg" alt="Nikita Lorusso - Web Designer" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" onerror="this.src='https://placehold.co/800x1000/050505/ffffff?text=Nikita+Lorusso'">
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- Servizi Section (Benefit Driven) -->
-    <section id="servizi" class="py-24 border-t border-zinc-900 relative z-10">
+    <!-- Servizi (Copywriting orientato ai benefici) -->
+    <section id="servizi" class="py-24 border-t border-zinc-900">
         <div class="max-w-6xl mx-auto px-6">
-            <h2 class="text-[10px] uppercase tracking-[0.3em] mb-16 text-zinc-500">Soluzioni per la tua crescita</h2>
+            <h2 class="text-[10px] uppercase tracking-[0.3em] mb-16 text-zinc-500 text-center">Soluzioni per la tua crescita</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 border border-zinc-900">
-                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
-                    <h3 class="text-xl mb-4 font-bold">Siti Web che Vendono</h3>
-                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Realizzo siti che non sono solo esteticamente curati, ma agiscono come venditori attivi 24/7 per il tuo business.</p>
+                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-all">
+                    <h3 class="text-xl mb-4 font-bold">Piattaforme Web che Vendono</h3>
+                    <p class="text-zinc-400 text-sm">Trasformo il tuo sito in un venditore attivo 24/7, ottimizzato per trasformare i visitatori in clienti qualificati.</p>
                 </div>
-                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
-                    <h3 class="text-xl mb-4 font-bold">Landing Page di Conversione</h3>
-                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Progetto funnel focalizzati sull'acquisizione di contatti qualificati, eliminando le distrazioni inutili.</p>
+                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-all">
+                    <h3 class="text-xl mb-4 font-bold">Landing Page a Conversione</h3>
+                    <p class="text-zinc-400 text-sm">Progetto pagine di atterraggio studiate per l'acquisizione. Eliminiamo il superfluo e puntiamo dritto al risultato di business.</p>
                 </div>
-                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
+                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-all">
                     <h3 class="text-xl mb-4 font-bold">Identità Visiva Autorevole</h3>
-                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Creo loghi e branding che comunicano professionalità immediata, giustificando prezzi premium per i tuoi servizi.</p>
+                    <p class="text-zinc-400 text-sm">Loghi e branding che comunicano professionalità istantanea, giustificando il tuo posizionamento premium sul mercato.</p>
                 </div>
-                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
-                    <h3 class="text-xl mb-4 font-bold">Grafica per Social</h3>
-                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Immagini coordinate che costruiscono il tuo brand e attirano l'attenzione del tuo target ideale.</p>
+                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-all">
+                    <h3 class="text-xl mb-4 font-bold">Grafica per Social Media</h3>
+                    <p class="text-zinc-400 text-sm">Immagini coordinate che attirano l'attenzione del target ideale e costruiscono la tua autorità online.</p>
                 </div>
-                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
-                    <h3 class="text-xl mb-4 font-bold">CV e Portfolio Digitali</h3>
-                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Trasformo la tua esperienza in una presentazione d'impatto, progettata per farti notare dalle opportunità giuste.</p>
+                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-all">
+                    <h3 class="text-xl mb-4 font-bold">Presentazioni Digitali</h3>
+                    <p class="text-zinc-400 text-sm">Trasformo la tua esperienza in una presentazione d'impatto, progettata per farti notare dalle opportunità giuste.</p>
                 </div>
-                <div class="border border-zinc-900 p-10 hover:bg-white hover:text-black transition-all group">
+                <div class="border border-zinc-900 p-10 hover:bg-zinc-900/30 transition-all">
                     <h3 class="text-xl mb-4 font-bold">Materiale Comunicativo</h3>
-                    <p class="text-zinc-400 group-hover:text-zinc-600 text-sm">Presentazioni e materiali grafici curati fin nei minimi dettagli per le tue interazioni professionali.</p>
+                    <p class="text-zinc-400 text-sm">Presentazioni e materiali grafici curati, essenziali per le tue interazioni professionali di alto livello.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Metodo (Remote & National) -->
-    <section id="metodo" class="py-24 bg-zinc-950 relative z-10">
+    <!-- Metodo -->
+    <section id="metodo" class="py-24 bg-zinc-950">
         <div class="max-w-3xl mx-auto px-6 text-center">
-            <h2 class="text-3xl font-bold mb-10">Metodologia di Lavoro</h2>
-            <p class="text-zinc-400 leading-relaxed">Il mio lavoro si basa su un sistema digitale collaudato. Opero esclusivamente in modalità remota su tutto il territorio nazionale. La mia gestione del progetto è basata su pianificazione rigorosa, rispetto delle scadenze e comunicazione chiara. Che tu sia a Milano, Roma o altrove, il mio impegno verso il tuo progetto è totale.</p>
+            <h2 class="text-3xl font-bold mb-10">Metodologia basata sulla disciplina</h2>
+            <p class="text-zinc-400 leading-relaxed text-lg">Il mio approccio al lavoro digitale è rigoroso: pianificazione, esecuzione precisa, rispetto delle scadenze. Opero esclusivamente in modalità remota in tutta Italia. La gestione del progetto è fluida, trasparente e focalizzata al 100% sui tuoi obiettivi di business. Non importa dove sei; il tuo progetto è in mani sicure.</p>
         </div>
     </section>
 
-    <!-- Contatti Section (CTA) -->
-    <section id="contatti" class="py-24 border-t border-zinc-900 relative z-10">
+    <!-- Contatti -->
+    <section id="contatti" class="py-24 border-t border-zinc-900">
         <div class="max-w-3xl mx-auto px-6">
-            <h2 class="text-4xl md:text-5xl font-bold mb-8 tracking-tighter">Pronto a dare una svolta digitale al tuo business?</h2>
-            <p class="text-zinc-400 mb-16">Lavoro con professionisti e aziende in tutta Italia. Se hai un progetto o vuoi capire come migliorare la tua presenza online, richiedi una prima consulenza gratuita. Analizzeremo insieme la tua situazione e vedremo come posso aiutarti a crescere.</p>
+            <h2 class="text-4xl font-bold mb-8">Pronto a dare una svolta digitale al tuo business?</h2>
+            <p class="text-zinc-400 mb-8 leading-relaxed">Lavoro con professionisti e aziende in tutta Italia. Se hai un progetto, un'idea o vuoi capire come migliorare la tua presenza online, richiedi una prima consulenza gratuita. Analizzeremo insieme la tua situazione e vedremo come posso aiutarti a crescere.</p>
             
-            <form id="contactForm" class="space-y-12">
+            <div class="mb-16 pb-8 border-b border-zinc-900">
+                <p class="text-zinc-500 text-sm uppercase tracking-widest mb-2">Preferisci parlare direttamente?</p>
+                <a href="tel:+393452664536" class="text-2xl font-mono hover:text-zinc-300 transition-colors">+39 345 266 4536</a>
+            </div>
+
+            <form id="contactForm" class="space-y-8" onsubmit="sendEmail(event)">
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 text-zinc-500">Nome</label>
-                    <input type="text" id="name" name="name" required placeholder="Il tuo nome">
+                    <input type="text" id="name" name="name" required placeholder="Nome e Cognome">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 text-zinc-500">Email</label>
-                    <input type="email" id="email" name="email" required placeholder="La tua email">
+                    <input type="email" id="email" name="email" required placeholder="La tua Email">
                 </div>
                 <div>
-                    <label class="block text-[10px] uppercase tracking-[0.2em] mb-2 text-zinc-500">Messaggio</label>
-                    <textarea id="message" name="message" required placeholder="Di cosa hai bisogno?" rows="3"></textarea>
+                    <textarea id="message" name="message" required placeholder="Raccontami il tuo progetto..." rows="3"></textarea>
                 </div>
-                <button type="button" onclick="sendEmail()" class="border border-white w-full md:w-auto px-12 py-5 uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all">
-                    Invia richiesta
+                <button type="submit" class="border border-white w-full md:w-auto px-12 py-5 uppercase text-[10px] tracking-[0.2em] hover:bg-white hover:text-black transition-all cursor-pointer">
+                    Invia richiesta di consulenza
                 </button>
             </form>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 border-t border-zinc-900 text-center text-zinc-600 text-[10px] uppercase tracking-[0.2em] relative z-10">
+    <footer class="py-12 border-t border-zinc-900 text-center text-zinc-600 text-[10px] uppercase tracking-[0.2em]">
         <p>&copy; 2026 Nikita Lorusso – Tutti i diritti riservati. Collaborazione remota in tutta Italia.</p>
     </footer>
 
     <script>
-        function sendEmail() {
+        function sendEmail(event) {
+            event.preventDefault(); 
+            
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
@@ -156,8 +202,8 @@
                 return;
             }
 
-            const subject = encodeURIComponent(`Nuova richiesta da ${name}`);
-            const body = encodeURIComponent(`Nome: ${name}\nEmail: ${email}\n\nMessaggio:\n${message}`);
+            const subject = encodeURIComponent(`Richiesta di Consulenza: ${name}`);
+            const body = encodeURIComponent(`Nome: ${name}\nEmail: ${email}\n\nProgetto:\n${message}`);
             const mailtoLink = `mailto:nikitalorusso68@gmail.com?subject=${subject}&body=${body}`;
             
             window.location.href = mailtoLink;
